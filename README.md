@@ -1,5 +1,0 @@
-# eth.social
-
-# License
-
-MIT
