@@ -1,0 +1,29 @@
+{
+  "name": "eth.social",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "truffle test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miguelmota/eth.social.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/miguelmota/eth.social/issues"
+  },
+  "homepage": "https://github.com/miguelmota/eth.social#readme",
+  "devDependencies": {
+    "watchify": "^3.9.0"
+  },
+  "dependencies": {
+    "ethereum-input-data-decoder": "0.0.2",
+    "moment": "^2.18.1"
+  }
+}
