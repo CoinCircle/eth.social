@@ -1,7 +1,12 @@
 const React = require('react')
 const ReactDOM = require('react-dom')
+const moment = require('moment')
 
 const {getInstance} = require('../services/contract')
+
+function handleError(error) {
+  console.error(error)
+}
 
 class App extends React.Component {
   render() {
@@ -12,7 +17,18 @@ class App extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault()
-    console.log("FOOO")
+
+    getInstance()
+    .createMeetup({
+      title: 'foo',
+      description: 'bar',
+      startTimestamp: moment().unix(),
+      endTimestamp: moment().add(1, 'hour').unix()
+    })
+    .then(tx => {
+      console.log(tx)
+    })
+    .catch(handleError)
   }
 }
 

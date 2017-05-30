@@ -19,7 +19,7 @@ class Contract {
     this.instance = instance
   }
 
-  createMeetup({title, description}) {
+  createMeetup({title, description, startTimestamp, endTimestamp}) {
     return new Promise((resolve, reject) => {
       this.instance.createMeetup(
         title,
@@ -51,6 +51,10 @@ class Contract {
 }
 
 function init() {
+  if (!web3.eth.defaultAccont) {
+    web3.eth.defaultAccont = web3.eth.accounts[0]
+  }
+
   const MeetupContract = web3.eth.contract(abiArray)
 
   contract = new Contract()

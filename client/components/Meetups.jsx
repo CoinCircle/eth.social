@@ -9,19 +9,6 @@ var meetups = [
 }
 ]
 
-/*
-  contract.createMeetup({
-    title: 'foo',
-    description: 'bar',
-    startTimestamp: moment().unix(),
-    endTimestamp: moment().add(5, 'hour').unix()
-  })
-  .then(tx => {
-  console.log(tx)
-  })
-  .catch(handleError)
-  */
-
 function handleError(error) {
   console.error(error)
 }

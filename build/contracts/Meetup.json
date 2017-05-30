@@ -225,12 +225,47 @@
       "updated_at": 1495778298159
     },
     "1496076330016": {
-      "events": {},
+      "events": {
+        "0x363c11bc58eec8f118b626700d88d4828b77c60aad1aa010d8d24eec0442a3ce": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "organizer",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "meetupHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "MeetupCreated",
+          "type": "event"
+        },
+        "0xb362375d111b182be3dd1acb4e8224111db1f9dad7692bb3623239e2dc12ec4f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "organizer",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "meetupHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "MeetupDeleted",
+          "type": "event"
+        }
+      },
       "links": {},
-      "address": "0x0d757646c40ed05bdf7ae8c2bfda20836b3069ba",
-      "updated_at": 1496076333044
+      "address": "0x190fad0ad8429256f2a2452853075915b75affec",
+      "updated_at": 1496129708070
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1496114533215
+  "updated_at": 1496129708070
 }
