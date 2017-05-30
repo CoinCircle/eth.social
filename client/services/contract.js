@@ -6,8 +6,6 @@ const contractAddress = contractConfig.address
 const abiJson = require('../../build/contracts/Meetup.json')
 const abiArray = abiJson.abi
 
-//var priv = '90bfd538c23128a626f005f1b34fb6f39c24ae36fc015c5d3f7b568e300c92a1'
-
 const decoder = new InputDataDecoder(abiArray)
 
 let contract = null;
