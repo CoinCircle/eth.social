@@ -1,19 +1,11 @@
 pragma solidity ^0.4.4;
 
-// https://github.com/Arachnid/solidity-stringutils
-import "../lib/solidity-stringutils/strings.sol";
-
 contract Meetup {
     /**
      * NOTES
      *
      * "organizer" is the person creating meetups.
      */
-
-    /**
-      * stringutils
-      */
-    using strings for *;
 
     /**
       * Events
@@ -24,13 +16,15 @@ contract Meetup {
     /**
       * meetup hashes that belong to an organzier
       */
-    mapping (address => bytes32[]) public organizerMeetups;
+    mapping (address => bytes32[]) organizerMeetups;
 
     /**
       * meetups table
       * key is a hash, value is the struct.
       */
     mapping (bytes32 => MeetupEvent) meetups;
+
+    bytes32[] meetupHashes;
 
     /**
       * Contract owner
@@ -42,6 +36,8 @@ contract Meetup {
         string description;
         uint256 startTimestamp;
         uint256 endTimestamp;
+        uint256 createdTimestamp;
+        address organizer;
     }
 
     function Meetup() {
@@ -62,6 +58,7 @@ contract Meetup {
     ) returns (bytes32) {
         address organizer = msg.sender;
 
+        /*
         // Start time cannot be a date from the past
         if (_startTimestamp < block.timestamp) {
             throw;
@@ -81,30 +78,46 @@ contract Meetup {
         if (bytes(_description).length == 0) {
             throw;
         }
+        */
 
         MeetupEvent memory meetup = MeetupEvent({
             title: _title,
             description: _description,
             startTimestamp: _startTimestamp,
-            endTimestamp: _endTimestamp
+            endTimestamp: _endTimestamp,
+            createdTimestamp: block.timestamp,
+            organizer: organizer
         });
 
-        string memory hashKey = addressToString(organizer).toSlice().concat(_title.toSlice());
+        string memory hashKey = _title;
+        //string memory hashKey = addressToString(organizer).toSlice().concat(_title.toSlice());
         bytes32 meetupHash = sha3(hashKey);
 
         meetups[meetupHash] = meetup;
         organizerMeetups[organizer].push(meetupHash);
+        meetupHashes.push(meetupHash);
 
         MeetupCreated(organizer, meetupHash);
 
         return meetupHash;
     }
 
-    function getMeetupHashes(address organizer) returns (bytes32[]) {
+    function getAllMeetupHashes() returns (bytes32[]) {
+        return meetupHashes;
+    }
+
+    function getMeetupHashesByOrganizer(address organizer) returns (bytes32[]) {
         return organizerMeetups[organizer];
     }
 
-    function getMeetup(bytes32 meetupHash) returns (string, string) {
+    function getMeetupByHash(bytes32 meetupHash) returns (
+        string,
+        string,
+        uint256,
+        uint256,
+        uint256,
+        address
+    ) {
         MeetupEvent meetup = meetups[meetupHash];
 
         /*
@@ -117,11 +130,22 @@ contract Meetup {
 
         string title = meetup.title;
         string description = meetup.description;
+        uint256 startTimestamp = meetup.startTimestamp;
+        uint256 endTimestamp = meetup.endTimestamp;
+        uint256 createdTimestamp = meetup.createdTimestamp;
+        address organizer = meetup.organizer;
 
-        return (title, description);
+        return (
+            title,
+            description,
+            startTimestamp,
+            endTimestamp,
+            createdTimestamp,
+            organizer
+        );
     }
 
-    function deleteMeetup(bytes32 meetupHash) returns (bool) {
+    function deleteMeetupByHash(bytes32 meetupHash) returns (bool) {
         address organizer = msg.sender;
 
         for (uint i = 0; i < organizerMeetups[organizer].length; i++) {

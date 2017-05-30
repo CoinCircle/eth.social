@@ -1,6 +1,7 @@
 var moment = require('moment')
 var Meetup = artifacts.require('./Meetup.sol')
 
+
 contract('Meetup', function(accounts) {
   it('should create a meetup', async function() {
     //console.log(accounts)
@@ -31,27 +32,38 @@ contract('Meetup', function(accounts) {
       var eventObj = await lastEvent()
       assert.equal(eventObj.event, 'MeetupCreated')
 
+      // get all meetup hashes
+      var meetupHashes = await instance.getAllMeetupHashes.call()
+      assert.equal(meetupHashes.length, 1)
+
       // get all meetup hashes for organizer
-      var meetupHashes = await instance.getMeetupHashes.call(organizer)
+      meetupHashes = await instance.getMeetupHashesByOrganizer.call(organizer)
       console.log(meetupHashes)
       assert.equal(meetupHashes.length, 1)
       assert.equal(typeof meetupHashes[0], 'string')
 
       // get meetup details for meetup hash
-      var meetup = await instance.getMeetup.call(meetupHashes[0])
-      console.log(meetup)
-      var [title, description] = meetup
+      var meetup = await instance.getMeetupByHash.call(meetupHashes[0])
+      var [
+        title,
+        description,
+        startTimestamp,
+        endTimestamp,
+        createdTimestamp
+      ] = meetup
+      var _organizer = meetup[5]
       assert.equal(title, 'Hello')
       assert.equal(description, 'World')
+      assert.equal(_organizer, organizer)
 
       // delete meetup
-      var deleted = await instance.deleteMeetup(meetupHashes[0])
+      var deleted = await instance.deleteMeetupByHash(meetupHashes[0])
       assert.ok(result.tx)
 
       var eventObj = await lastEvent()
       assert.equal(eventObj.event, 'MeetupDeleted')
 
-      meetupHashes = await instance.getMeetupHashes.call(organizer)
+      meetupHashes = await instance.getMeetupHashesByOrganizer.call(organizer)
       assert.equal(meetupHashes.length, 0)
       //assert.notOk(meetup)
 

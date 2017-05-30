@@ -10,6 +10,30 @@ const decoder = new InputDataDecoder(abiArray)
 
 let contract = null;
 
+function meetupArrayToObject(meetup) {
+  let [
+    title,
+    description,
+    startTimestamp,
+    endTimestamp,
+    createdTimestamp,
+    organizer
+  ] = meetup
+
+  startTimestamp = startTimestamp.toNumber()
+  endTimestamp = endTimestamp.toNumber()
+  createdTimestamp = createdTimestamp.toNumber()
+
+  return {
+    title,
+    description,
+    startTimestamp,
+    endTimestamp,
+    createdTimestamp,
+    organizer
+  }
+}
+
 class Contract {
   constructor() {
 
@@ -39,20 +63,38 @@ class Contract {
     })
   }
 
-  getMeetups(organizer) {
+  getAllMeetups(organizer) {
     return new Promise((resolve, reject) => {
-      this.instance.getMeetupHashes.call(
+      this.instance.getAllMeetupHashes.call(
       (error, meetupHashes) => {
         if (error) return reject(error)
-        resolve(meetupHashes)
+
+        const promises = meetupHashes.map(hash => {
+          return new Promise((resolve, reject) => {
+            this.instance.getMeetupByHash.call(hash, (error, result) => {
+              if (error) reject(error)
+
+              resolve(meetupArrayToObject(result))
+            })
+          })
+        })
+
+        Promise.all(promises)
+        .then(results => {
+          resolve(results)
+        })
       })
     })
   }
 }
 
 function init() {
-  if (!web3.eth.defaultAccont) {
-    web3.eth.defaultAccont = web3.eth.accounts[0]
+  if (!web3.eth.defaultAccount) {
+    web3.eth.defaultAccount = web3.eth.accounts[0]
+  }
+
+  if (!web3.eth.defaultAccount) {
+    console.error('No default account set')
   }
 
   const MeetupContract = web3.eth.contract(abiArray)
@@ -68,7 +110,7 @@ function getInstance() {
 // wait for MetaMask to inject Web3
 setTimeout(() => {
   init()
-}, 500)
+}, 1000)
 
 module.exports = {
   getInstance
