@@ -36,7 +36,7 @@ function meetupArrayToObject(meetup) {
 
 class Contract {
   constructor() {
-
+    this.instance = null
   }
 
   setContractInstance(instance) {
@@ -44,6 +44,10 @@ class Contract {
   }
 
   createMeetup({title, description, startTimestamp, endTimestamp}) {
+    if (!this.instance) {
+      return Promise.reject()
+    }
+
     return new Promise((resolve, reject) => {
       this.instance.createMeetup(
         title,
@@ -64,6 +68,10 @@ class Contract {
   }
 
   getAllMeetups(organizer) {
+    if (!this.instance) {
+      return Promise.reject()
+    }
+
     return new Promise((resolve, reject) => {
       this.instance.getAllMeetupHashes.call(
       (error, meetupHashes) => {
@@ -89,6 +97,18 @@ class Contract {
 }
 
 function init() {
+  contract = new Contract()
+
+  if (!(window.web3 instanceof Object)) {
+    alert('web3 object not found')
+    return false;
+  }
+
+  if (web3.currentProvider.isMetaMask !== true) {
+    alert('Please install MetaMask Extension for access.')
+    return false;
+  }
+
   if (!web3.eth.defaultAccount) {
     web3.eth.defaultAccount = web3.eth.accounts[0]
   }
@@ -99,7 +119,6 @@ function init() {
 
   const MeetupContract = web3.eth.contract(abiArray)
 
-  contract = new Contract()
   contract.setContractInstance(MeetupContract.at(contractAddress))
 }
 
