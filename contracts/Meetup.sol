@@ -1,6 +1,11 @@
 pragma solidity ^0.4.4;
 
+//import "../lib/solidity-stringutils/strings.sol";
+
 contract Meetup {
+    // stringutils
+    //using strings for *;
+
     /**
      * NOTES
      *
@@ -11,6 +16,7 @@ contract Meetup {
       * Events
       */
     event MeetupCreated(address organizer, bytes32 meetupHash);
+    event MeetupUpdated(address organizer, bytes32 meetupHash);
     event MeetupDeleted(address organizer, bytes32 meetupHash);
 
     /**
@@ -32,8 +38,11 @@ contract Meetup {
     address owner;
 
     struct MeetupEvent {
+        bytes32 id;
         string title;
         string description;
+        string tags; // comma separated
+        string image;
         uint256 startTimestamp;
         uint256 endTimestamp;
         uint256 createdTimestamp;
@@ -53,51 +62,105 @@ contract Meetup {
     function createMeetup(
         string _title,
         string _description,
+        string _tags,
+        string _image,
         uint256 _startTimestamp,
         uint256 _endTimestamp
     ) returns (bytes32) {
         address organizer = msg.sender;
 
-        /*
-        // Start time cannot be a date from the past
-        if (_startTimestamp < block.timestamp) {
+        if (!verifyStartTimestamp(_startTimestamp)) {
             throw;
         }
 
-        // Start time cannot be afer end time
-        if (_startTimestamp > _endTimestamp) {
+        if (!verifyEndTimestamp(_startTimestamp, _endTimestamp)) {
             throw;
         }
 
-        // Must have title
-        if (bytes(_title).length == 0) {
+        if (!verifyTitle(bytes(_title))) {
             throw;
         }
 
-        // Must have description
-        if (bytes(_description).length == 0) {
+        if (!verifyDescription(bytes(_description))) {
             throw;
         }
-        */
+
+        // dumb verification of ipfs multihash
+        if (!verifyImageHash(bytes(_image))) {
+            throw;
+        }
+
+        string memory hashKey = _title;
+        //string memory hashKey = addressToString(organizer).toSlice().concat(_title.toSlice());
+        bytes32 meetupHash = sha3(hashKey);
 
         MeetupEvent memory meetup = MeetupEvent({
+            id: meetupHash,
             title: _title,
             description: _description,
+            tags: _tags,
+            image: _image,
             startTimestamp: _startTimestamp,
             endTimestamp: _endTimestamp,
             createdTimestamp: block.timestamp,
             organizer: organizer
         });
 
-        string memory hashKey = _title;
-        //string memory hashKey = addressToString(organizer).toSlice().concat(_title.toSlice());
-        bytes32 meetupHash = sha3(hashKey);
-
         meetups[meetupHash] = meetup;
         organizerMeetups[organizer].push(meetupHash);
         meetupHashes.push(meetupHash);
 
         MeetupCreated(organizer, meetupHash);
+
+        return meetupHash;
+    }
+
+    function editMeetup(
+        bytes32 meetupHash,
+        string _title,
+        string _description,
+        string _tags,
+        string _image,
+        uint256 _startTimestamp,
+        uint256 _endTimestamp
+    ) returns (bytes32) {
+        MeetupEvent meetup = meetups[meetupHash];
+
+        // must be organizer of meetup or owner of contract
+        if (meetup.organizer != msg.sender) {
+            if (owner != msg.sender) {
+                throw;
+            }
+        }
+
+        if (!verifyStartTimestamp(_startTimestamp)) {
+            throw;
+        }
+
+        if (!verifyEndTimestamp(_startTimestamp, _endTimestamp)) {
+            throw;
+        }
+
+        if (!verifyTitle(bytes(_title))) {
+            throw;
+        }
+
+        if (!verifyDescription(bytes(_description))) {
+            throw;
+        }
+
+        if (!verifyImageHash(bytes(_image))) {
+            throw;
+        }
+
+        meetup.title = _title;
+        meetup.description = _description;
+        meetup.tags = _tags;
+        meetup.image = _image;
+        meetup.startTimestamp = _startTimestamp;
+        meetup.endTimestamp = _endTimestamp;
+
+        MeetupUpdated(meetup.organizer, meetupHash);
 
         return meetupHash;
     }
@@ -111,6 +174,9 @@ contract Meetup {
     }
 
     function getMeetupByHash(bytes32 meetupHash) returns (
+        bytes32,
+        string,
+        string,
         string,
         string,
         uint256,
@@ -128,25 +194,28 @@ contract Meetup {
             throw;
         }
 
-        string title = meetup.title;
-        string description = meetup.description;
-        uint256 startTimestamp = meetup.startTimestamp;
-        uint256 endTimestamp = meetup.endTimestamp;
-        uint256 createdTimestamp = meetup.createdTimestamp;
-        address organizer = meetup.organizer;
-
         return (
-            title,
-            description,
-            startTimestamp,
-            endTimestamp,
-            createdTimestamp,
-            organizer
+            meetup.id,
+            meetup.title,
+            meetup.description,
+            meetup.tags,
+            meetup.image,
+            meetup.startTimestamp,
+            meetup.endTimestamp,
+            meetup.createdTimestamp,
+            meetup.organizer
         );
     }
 
     function deleteMeetupByHash(bytes32 meetupHash) returns (bool) {
-        address organizer = msg.sender;
+        address organizer = meetups[meetupHash].organizer;
+
+        // must be organizer of meetup or owner of contract
+        if (organizer != msg.sender) {
+            if (owner != msg.sender) {
+                throw;
+            }
+        }
 
         for (uint i = 0; i < organizerMeetups[organizer].length; i++) {
             if (organizerMeetups[organizer][i] == meetupHash) {
@@ -155,7 +224,13 @@ contract Meetup {
 
                 MeetupDeleted(organizer, meetupHash);
 
-                return true;
+                for (uint j = 0; j < meetupHashes.length; j++) {
+                    if (meetupHashes[j] == meetupHash) {
+                        removeFromMeetupHashesArray(j);
+
+                        return true;
+                    }
+                }
             }
         }
 
@@ -180,12 +255,95 @@ contract Meetup {
         bytes32[] storage array = organizerMeetups[organizer];
         if (index >= array.length) return;
 
-        for (uint i = index; i < array.length - 1; i++){
+        for (uint i = index; i < array.length - 1; i++) {
             array[i] = array[i + 1];
         }
 
         delete array[array.length - 1];
         array.length = array.length - 1;
         return array;
+    }
+
+    function removeFromMeetupHashesArray(uint index) returns (bytes32[]) {
+        bytes32[] storage array = meetupHashes;
+        if (index >= array.length) return;
+
+        for (uint i = index; i < array.length - 1; i++) {
+            array[i] = array[i + 1];
+        }
+
+        delete array[array.length - 1];
+        array.length = array.length - 1;
+        return array;
+    }
+
+    // https://ethereum.stackexchange.com/a/2834/5093
+    function bytes32ToString(bytes32 x) constant returns (string) {
+        bytes memory bytesString = new bytes(32);
+        uint charCount = 0;
+        for (uint j = 0; j < 32; j++) {
+            byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
+            if (char != 0) {
+                bytesString[charCount] = char;
+                charCount++;
+            }
+        }
+        bytes memory bytesStringTrimmed = new bytes(charCount);
+        for (j = 0; j < charCount; j++) {
+            bytesStringTrimmed[j] = bytesString[j];
+        }
+        return string(bytesStringTrimmed);
+    }
+
+    function verifyTitle(bytes title) constant returns (bool) {
+        // Must have title
+        if (title.length > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    function verifyDescription(bytes description) constant returns (bool) {
+        // Must have description
+        if (description.length > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    function verifyStartTimestamp(uint256 startTimestamp) constant returns (bool) {
+        // Start time cannot be a date from the past
+        if (startTimestamp >= block.timestamp) {
+            return true;
+        }
+
+        return false;
+    }
+
+    function verifyEndTimestamp(
+        uint256 startTimestamp,
+        uint256 endTimestamp
+    ) constant returns (bool) {
+        // Start time cannot be afer end time
+        if (startTimestamp <= endTimestamp) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // "dumb" verification of ipfs multihash
+    function verifyImageHash(bytes hash) constant returns (bool) {
+        return true;
+        if (hash.length > 0 &&
+            hash.length <= 46 &&
+            hash[0] == "Q" &&
+            hash[1] == "m") {
+            return true;
+        }
+
+        return false;
     }
 }
