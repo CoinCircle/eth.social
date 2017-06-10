@@ -8,9 +8,12 @@ const {
 } = require('react-router-dom')
 
 const NewMeetup = require('./NewMeetup.jsx')
+const EditMeetup = require('./EditMeetup.jsx')
 const Meetups = require('./Meetups.jsx')
+const Meetup = require('./Meetup.jsx')
 const TopMenu = require('./TopMenu.jsx')
 const About = require('./About.jsx')
+const Help = require('./Help.jsx')
 
 class App extends React.Component {
   render() {
@@ -18,11 +21,14 @@ class App extends React.Component {
       <Router>
         <div>
         <TopMenu />
-        <div className="ui grid padded">
+        <div className="ui grid stackable padded">
           <Route exact path="/" component={Meetups}/>
-          <Route path="/meetups" component={Meetups}/>
-          <Route path="/new" component={NewMeetup}/>
-          <Route path="/about" component={About}/>
+          <Route exact path="/meetups" component={Meetups}/>
+          <Route exact path="/meetup/new" component={NewMeetup}/>
+          <Route exact path="/meetup/:id([0-9a-fA-f]{66})/edit" component={EditMeetup}/>
+          <Route exact path="/meetup/:id([0-9a-fA-f]{66})" component={Meetup}/>
+          <Route exact path="/about" component={About}/>
+          <Route exact path="/help" component={Help}/>
         </div>
         </div>
       </Router>

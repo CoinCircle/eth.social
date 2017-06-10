@@ -5,9 +5,9 @@ module.exports = {
       port: 8545,
       network_id: "*" // Match any network id
     },
-    adchain: {
-      host: "testrpc.adchain.com",
-      port: 80,
+    testnet: {
+      host: "testnet.infura.io",
+      port: 8545,
       network_id: "*" // Match any network id
     }
   }

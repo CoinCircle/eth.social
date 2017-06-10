@@ -4,24 +4,29 @@ const ReactDOM = require('react-dom')
 class About extends React.Component {
   render() {
     return (
-      <div className="ui grid padded">
-        <div className="row">
-          <h2 className="ui header">
+      <div className="ui grid stackable padded">
+        <div className="column sixteen wide">
+          <h2 className="ui huge header">
             About
           </h2>
+          <div className="ui divider"></div>
         </div>
         <div className="row">
-          <p>
-            eth.social is a place for posting social event,<br />
-            in a completely decentralized way by being built on top of the Ethereum blockchain and hosted on IPFS.
-          </p>
+          <div className="column ten wide">
+            <p>
+              eth.social is a place for posting social events,
+              in a completely decentralized way; it's built on top of the <a href="https://www.ethereum.org/" target="_blank">Ethereum</a> blockchain and hosted on <a href="https://ipfs.io/" target="_blank">IPFS</a>.
+            </p>
+          </div>
         </div>
         <div className="row">
-          <p>
-            <a href="https://github.com/miguelmota/eth.social" target="_blank">
-              <i className="icon large github"></i>
-            </a>
-          </p>
+          <div className="column sixteen wide">
+            <p>
+              <a href="https://github.com/miguelmota/eth.social" target="_blank">
+                <i className="icon large github"></i> Github
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     )

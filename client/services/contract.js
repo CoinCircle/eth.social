@@ -1,10 +1,15 @@
 const InputDataDecoder = require('ethereum-input-data-decoder')
 
-const contractConfig = require('../config/contract.json')
-const contractAddress = contractConfig.address
+const contractConfig = require('../config/contract.js')
+const contractAddress = contractConfig.Meetup.address;
+
+console.log(contractAddress)
 
 const abiJson = require('../../build/contracts/Meetup.json')
 const abiArray = abiJson.abi
+
+const {DEFAULT_MEETUP_IMAGE} = require('../constants/defaults')
+const ipfsUrl = require('../utils/ipfsUrl')
 
 const decoder = new InputDataDecoder(abiArray)
 
@@ -12,8 +17,12 @@ let contract = null;
 
 function meetupArrayToObject(meetup) {
   let [
+    id,
     title,
     description,
+    location,
+    tags,
+    image,
     startTimestamp,
     endTimestamp,
     createdTimestamp,
@@ -24,13 +33,20 @@ function meetupArrayToObject(meetup) {
   endTimestamp = endTimestamp.toNumber()
   createdTimestamp = createdTimestamp.toNumber()
 
+  const imageUrl = ipfsUrl(image || DEFAULT_MEETUP_IMAGE);
+
   return {
+    id,
     title,
     description,
+    location,
+    tags,
+    image,
     startTimestamp,
     endTimestamp,
     createdTimestamp,
-    organizer
+    organizer,
+    imageUrl
   }
 }
 
@@ -41,9 +57,27 @@ class Contract {
 
   setContractInstance(instance) {
     this.instance = instance
+
+    this.instance.allEvents()
+    .watch((error, log) => {
+      if (error) {
+        console.error(error)
+        return false
+      }
+
+      console.log('Event', log)
+    })
   }
 
-  createMeetup({title, description, startTimestamp, endTimestamp}) {
+  createMeetup({
+    title,
+    description,
+    location,
+    tags,
+    image,
+    startTimestamp,
+    endTimestamp
+  }) {
     if (!this.instance) {
       return Promise.reject()
     }
@@ -52,6 +86,46 @@ class Contract {
       this.instance.createMeetup(
         title,
         description,
+        location,
+        tags,
+        image,
+        startTimestamp,
+        endTimestamp,
+      (error, tx) => {
+        if (error) return reject(error)
+        resolve(tx)
+
+        web3.eth.getTransaction(tx, (error, result) => {
+          console.log(error, result)
+          const decoded = decoder.decodeData(result.input);
+          console.log(decoded)
+        })
+      })
+    })
+  }
+
+  editMeetup({
+    id,
+    title,
+    description,
+    location,
+    tags,
+    image,
+    startTimestamp,
+    endTimestamp
+  }) {
+    if (!this.instance) {
+      return Promise.reject()
+    }
+
+    return new Promise((resolve, reject) => {
+      this.instance.editMeetup(
+        id,
+        title,
+        description,
+        location,
+        tags,
+        image,
         startTimestamp,
         endTimestamp,
       (error, tx) => {
@@ -76,6 +150,7 @@ class Contract {
       this.instance.getAllMeetupHashes.call(
       (error, meetupHashes) => {
         if (error) return reject(error)
+        console.log(meetupHashes)
 
         const promises = meetupHashes.map(hash => {
           return new Promise((resolve, reject) => {
@@ -91,6 +166,38 @@ class Contract {
         .then(results => {
           resolve(results)
         })
+      })
+    })
+  }
+
+  getMeetupById(id) {
+    if (!this.instance) {
+      return Promise.reject()
+    }
+
+    return new Promise((resolve, reject) => {
+      this.instance.getMeetupByHash.call(
+      id,
+      (error, result) => {
+        if (error) return reject(error)
+
+        resolve(meetupArrayToObject(result))
+      })
+    })
+  }
+
+  deleteMeetupById(id) {
+    if (!this.instance) {
+      return Promise.reject()
+    }
+
+    return new Promise((resolve, reject) => {
+      this.instance.deleteMeetupByHash(
+      id,
+      (error, result) => {
+        if (error) return reject(error)
+
+        resolve()
       })
     })
   }

@@ -40,21 +40,52 @@
 
 html,
 body {
-  background: #fff;
+  background: #f7f7f7;
 }
 
 body {
   color: #2d2d2d;
 }
-h1 {
+
+body,
+.ui.header,
+.ui.items>.item>.content a:not(.ui),
+:root:root .ui.menu .item {
   font-family: 'Exo 2', sans-serif;
+}
+
+body,
+.ui.header,
+.ui.card>.content>.header,
+.ui.cards>.card>.content>.header,
+:root:root .ui.header .sub.header,
+:root:root .statistic .label,
+:root:root .statistic .value {
+  color: #4A4A4A;
+}
+
+a {
+  color: #000000;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+p a {
+  border-bottom: 1px dotted #000;
+}
+
+.ui.segment {
+  box-shadow: none;
+  border-radius: 0;
+}
+
+h1 {
   font-weight: 300;
 }
 h1 span {
   font-weight: 500;
 }
 p {
-  font-family: 'Exo 2', sans-serif;
   font-weight: 500;
 }
 small {
@@ -77,4 +108,25 @@ small {
 .HomeHero header {
   background: rgba(0, 0, 0, 0.38);
   padding: 20px;
+}
+
+
+.TopMenu {
+}
+
+.TopMenu .menu {
+  border-radius: 0;
+  box-shadow: none;
+  background: #fff;
+}
+
+.TopMenuFirst {
+  overflow: auto;
+}
+
+.MeetupsGrid,
+.MeetupGrid,
+.MeetupsGrid .item .grid,
+.MeetupGrid .item .grid {
+  width: 100%;
 }

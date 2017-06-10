@@ -1,0 +1,5 @@
+/.idea
+/coverage
+/node_modules
+/karma-mocha-webworker.iml
+/npm-debug.log
