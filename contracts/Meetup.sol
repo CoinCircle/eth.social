@@ -13,7 +13,7 @@ contract Meetup {
      */
 
     /**
-      * Events
+      * Meetup Events
       */
     event MeetupCreated(address organizer, bytes32 meetupHash);
     event MeetupUpdated(address organizer, bytes32 meetupHash);
@@ -30,6 +30,9 @@ contract Meetup {
       */
     mapping (bytes32 => MeetupEvent) meetups;
 
+    /**
+      * array containing all hashes of meetups
+     */
     bytes32[] meetupHashes;
 
     /**
@@ -37,10 +40,14 @@ contract Meetup {
       */
     address owner;
 
+    /**
+      * Meetup event struct
+      */
     struct MeetupEvent {
         bytes32 id;
         string title;
         string description;
+        string location;
         string tags; // comma separated
         string image;
         uint256 startTimestamp;
@@ -62,6 +69,7 @@ contract Meetup {
     function createMeetup(
         string _title,
         string _description,
+        string _location,
         string _tags,
         string _image,
         uint256 _startTimestamp,
@@ -69,6 +77,7 @@ contract Meetup {
     ) returns (bytes32) {
         address organizer = msg.sender;
 
+        /*
         if (!verifyStartTimestamp(_startTimestamp)) {
             throw;
         }
@@ -76,6 +85,7 @@ contract Meetup {
         if (!verifyEndTimestamp(_startTimestamp, _endTimestamp)) {
             throw;
         }
+        */
 
         if (!verifyTitle(bytes(_title))) {
             throw;
@@ -85,19 +95,23 @@ contract Meetup {
             throw;
         }
 
+        if (!verifyLocation(bytes(_location))) {
+            throw;
+        }
+
         // dumb verification of ipfs multihash
         if (!verifyImageHash(bytes(_image))) {
             throw;
         }
 
-        string memory hashKey = _title;
-        //string memory hashKey = addressToString(organizer).toSlice().concat(_title.toSlice());
-        bytes32 meetupHash = sha3(hashKey);
+        // unique meetup hash for id
+        bytes32 meetupHash = keccak256(_title, organizer, block.number, block.timestamp);
 
         MeetupEvent memory meetup = MeetupEvent({
             id: meetupHash,
             title: _title,
             description: _description,
+            location: _location,
             tags: _tags,
             image: _image,
             startTimestamp: _startTimestamp,
@@ -119,6 +133,7 @@ contract Meetup {
         bytes32 meetupHash,
         string _title,
         string _description,
+        string _location,
         string _tags,
         string _image,
         uint256 _startTimestamp,
@@ -133,6 +148,7 @@ contract Meetup {
             }
         }
 
+        /*
         if (!verifyStartTimestamp(_startTimestamp)) {
             throw;
         }
@@ -140,6 +156,7 @@ contract Meetup {
         if (!verifyEndTimestamp(_startTimestamp, _endTimestamp)) {
             throw;
         }
+        */
 
         if (!verifyTitle(bytes(_title))) {
             throw;
@@ -149,12 +166,17 @@ contract Meetup {
             throw;
         }
 
+        if (!verifyLocation(bytes(_location))) {
+            throw;
+        }
+
         if (!verifyImageHash(bytes(_image))) {
             throw;
         }
 
         meetup.title = _title;
         meetup.description = _description;
+        meetup.location = _location;
         meetup.tags = _tags;
         meetup.image = _image;
         meetup.startTimestamp = _startTimestamp;
@@ -179,6 +201,7 @@ contract Meetup {
         string,
         string,
         string,
+        string,
         uint256,
         uint256,
         uint256,
@@ -198,6 +221,7 @@ contract Meetup {
             meetup.id,
             meetup.title,
             meetup.description,
+            meetup.location,
             meetup.tags,
             meetup.image,
             meetup.startTimestamp,
@@ -313,6 +337,15 @@ contract Meetup {
         return false;
     }
 
+    function verifyLocation(bytes location) constant returns (bool) {
+        // Must have description
+        if (location.length > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     function verifyStartTimestamp(uint256 startTimestamp) constant returns (bool) {
         // Start time cannot be a date from the past
         if (startTimestamp >= block.timestamp) {
@@ -347,3 +380,36 @@ contract Meetup {
         return false;
     }
 }
+
+/*
+// TODO
+contract MeetupGroup {
+
+// Categories
+
+        Outdoors & Adventure
+        Tech
+        Family
+        Health & Wellness
+        Sports & Fitness
+        Learning
+        Photography
+        Food & Drink
+        Writing
+        Language & Culture
+        Music
+        Movements
+        LGBTQ
+        Film
+        Sci-Fi & Games
+        Beliefs
+        Arts
+        Book Clubs
+        Dance
+        Pets
+        Hobbies & Crafts
+        Fashion & Beauty
+        Social
+        Career & Business
+}
+*/
