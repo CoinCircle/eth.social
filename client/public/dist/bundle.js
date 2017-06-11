@@ -824,7 +824,7 @@ class About extends React.Component {
               { href: 'https://www.ethereum.org/', target: '_blank' },
               'Ethereum'
             ),
-            ' blockchain and hosted on ',
+            ' blockchain and ',
             React.createElement(
               'a',
               { href: 'https://ipfs.io/', target: '_blank' },
