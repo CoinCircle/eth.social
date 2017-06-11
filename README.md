@@ -2,7 +2,7 @@
 
 > An Ethereum dApp for posting social events.
 
-<img src="./screenshot.png" width="500">
+<img src="./screenshot.png" width="700">
 
 Proof of Concept
 
