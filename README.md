@@ -2,9 +2,9 @@
 
 > An Ethereum dApp for posting social events.
 
-[https://eth.social](https://eth.social)
+**[https://eth.social](https://eth.social)**
 
-# Development
+## Development
 
 Watch and compile client
 
@@ -49,7 +49,7 @@ cd client/
 npm run ipfs-deploy
 ```
 
-# Test
+## Test
 
 Test smart contracts
 
