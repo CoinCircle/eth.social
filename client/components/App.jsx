@@ -14,6 +14,7 @@ const Meetup = require('./Meetup.jsx')
 const TopMenu = require('./TopMenu.jsx')
 const About = require('./About.jsx')
 const Help = require('./Help.jsx')
+const Footer = require('./Footer.jsx')
 
 class App extends React.Component {
   render() {
@@ -30,6 +31,7 @@ class App extends React.Component {
           <Route exact path="/about" component={About}/>
           <Route exact path="/help" component={Help}/>
         </div>
+        <Footer />
         </div>
       </Router>
     )

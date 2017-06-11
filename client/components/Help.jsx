@@ -12,7 +12,18 @@ class Help extends React.Component {
           <div className="ui divider"></div>
         </div>
         <div className="column sixteen wide">
-          <p>Use <a href="https://metamask.io/" target="_blank">MetaMask</a> Chrome extension and set provider to <code>https://testnet.infura.io:80</code>.</p>
+         <h3>Install MetaMask</h3>
+          <p>Install <a href="https://metamask.io/" target="_blank">MetaMask</a> Chrome extension to sign transactions.</p>
+
+        <h3>Set Ethereum Provider</h3>
+        <p>Currently eth.social is in a testing and development phase so it's not available in the mainnet yet.</p>
+        <p>Set ethereum provider to "<a href="https://www.rinkeby.io/" target="_blank">Rinkeyby Test Network</a>".</p>
+
+        <img src="https://gateway.ipfs.io/ipfs/QmNoEWq11GLstCJEffpG4ho7jEBJyyKQgzNsD8z5GTq5f5" width="300" />
+
+        <h3>Deposit ether</h3>
+        <p>Use the <a href="https://www.rinkeby.io/" target="_blank">rinkeyby faucet</a> if you don't already have ether in your account.</p>
+
         </div>
       </div>
     )

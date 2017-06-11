@@ -17,14 +17,8 @@ class App extends React.Component {
             <Link to="/meetups" className="item">
               <i className="icon calendar"></i> Meetups
             </Link>
-            <Link to="/groups" className="item disabled">
-              <i className="icon users"></i> Groups
-            </Link>
             <Link to="/meetup/new" className="item">
               <i className="icon plus circle"></i> New Meetup
-            </Link>
-            <Link to="/groups/new" className="item disabled">
-              <i className="icon plus circle"></i> New Group
             </Link>
             <div className="right menu">
               <Link to="/about" className="item">
@@ -42,3 +36,12 @@ class App extends React.Component {
 }
 
 module.exports = App
+
+/*
+  <Link to="/groups" className="item disabled">
+    <i className="icon users"></i> Groups
+  </Link>
+  <Link to="/groups/new" className="item disabled">
+    <i className="icon plus circle"></i> New Group
+  </Link>
+*/
