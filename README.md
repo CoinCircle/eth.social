@@ -2,6 +2,10 @@
 
 > An Ethereum dApp for posting social events.
 
+<img src="./screenshot.png" width="500">
+
+Proof of Concept
+
 **[https://eth.social](https://eth.social)**
 
 ## Development
