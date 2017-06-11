@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/miguelmota/eth.social#readme",
   "devDependencies": {
+    "truffle-hdwallet-provider": "git+https://github.com/miguelmota/truffle-hdwallet-provider.git",
     "watchify": "^3.9.0"
   },
   "dependencies": {

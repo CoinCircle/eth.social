@@ -97,6 +97,10 @@ _archive
 uploads
 tmp
 
+# files to ignore #
+###################
+secrets.json
+
 # Vim files to ignore #
 #######################
 .VimballRecord

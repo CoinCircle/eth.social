@@ -39,7 +39,7 @@ truffle compile
 Deploy smart contracts
 
 ```bash
-truffle migrate --reset --network=testnet
+truffle migrate --reset --network=development
 ```
 
 Deploy client to IPFS
