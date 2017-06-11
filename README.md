@@ -1,8 +1,6 @@
 # eth.social
 
->
-
-              in a completely decentralized way; it's built on top of the <a href="https://www.ethereum.org/" target="_blank">Ethereum</a> blockchain and hosted on <a href="https://ipfs.io/" target="_blank">IPFS</a>.
+> An Ethereum dApp for posting social events.
 
 [https://eth.social](https://eth.social)
 
