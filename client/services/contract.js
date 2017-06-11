@@ -203,17 +203,30 @@ class Contract {
   }
 }
 
+function setupWeb3() {
+  const Web3 = require('web3')
+  const web3 = new Web3()
+
+  const providerUrl = 'https://kovan.infura.io:443'
+  const provider = new Web3.providers.HttpProvider(providerUrl)
+  web3.setProvider(provider)
+
+  return web3
+}
+
 function init() {
   contract = new Contract()
 
   if (!(window.web3 instanceof Object)) {
-    alert('web3 object not found')
-    return false;
+    console.info('web3 object not found')
+    //alert('web3 object not found')
+
+    window.web3 = setupWeb3()
   }
 
   if (web3.currentProvider.isMetaMask !== true) {
-    alert('Please install MetaMask Extension for access.')
-    return false;
+    //alert('Please install MetaMask Extension for access.')
+    //return false;
   }
 
   if (!web3.eth.defaultAccount) {
