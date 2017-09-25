@@ -1,0 +1,13 @@
+{
+  "id": 1,
+  "title": "hello world",
+  "description": "foo bar",
+  "location": "Los Angeles, CA",
+  "tags": ["qux", "bar"],
+  "image": "QmQXNrAUm5ykgWuH7PMKM98d5ezMKSqEBg3KSmC1KuQAco",
+  "start": 1506308536,
+  "end": 1506312136,
+  "updated": "",
+  "organizer": "0x541f4f56d958fd7425d990abd2f15fa29872bcc8",
+  "deleted": false
+}

@@ -1,1 +1,1 @@
-require('./components/index.jsx')
+require('./components/index.js')

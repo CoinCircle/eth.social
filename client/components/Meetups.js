@@ -4,7 +4,7 @@ const ReactDOM = require('react-dom')
 
 const {getInstance} = require('../services/contract')
 
-const Spinner = require('./Spinner.jsx')
+const Spinner = require('./Spinner.js')
 
 function handleError(error) {
   console.error(error)

@@ -1,9 +1,9 @@
 const React = require('react')
 const ReactDOM = require('react-dom')
 const moment = require('moment')
-
 const Datetime = require('react-datetime')
 
+const Spinner = require('./Spinner.js')
 const {getInstance} = require('../services/contract')
 const {uploadFile, uploadFromUrl} = require('../services/upload')
 const ipfsUrl = require('../utils/ipfsUrl')
@@ -54,8 +54,6 @@ class EditMeetup extends React.Component {
       meetup,
       showSpinner
     } = this.state
-
-const Spinner = require('./Spinner.jsx')
 
     return (
     <div className="ui grid stackable padded">

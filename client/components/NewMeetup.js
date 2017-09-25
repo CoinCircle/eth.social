@@ -3,7 +3,7 @@ const ReactDOM = require('react-dom')
 const moment = require('moment')
 
 const {getInstance} = require('../services/contract')
-const EditMeetup = require('./EditMeetup.jsx')
+const EditMeetup = require('./EditMeetup.js')
 
 function handleError(error) {
   console.error(error)

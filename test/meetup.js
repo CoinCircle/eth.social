@@ -1,355 +1,66 @@
 var moment = require('moment')
 var Meetup = artifacts.require('./Meetup.sol')
 
+var postIpfsHash_A = 'QmfFTftHqmfhjhwBYtKQRPLnHmai8GXZnx3J79BD3bNjds'
+var postIpfsHash_B = 'QmUwE6JghehYgbUig4Q9VJ81wAaGhky3ESsQgFXcCyDSRm'
+
+function getLastEvent(instance) {
+  return new Promise((resolve, reject) => {
+    instance.allEvents()
+    .watch((error, log) => {
+      if (error) return reject(error)
+      resolve(log)
+    })
+  })
+}
 
 contract('Meetup', function(accounts) {
-  it('should create a meetup + should delete meetup', async function() {
-    //console.log(accounts)
+  it('should create a meetup', async function() {
     var organizer = accounts[0]
 
     try {
       var instance = await Meetup.deployed()
 
-      var lastEvent = () => {
-        return new Promise((resolve, reject) => {
-          instance.allEvents()
-          .watch((error, log) => {
-            if (error) return reject(error)
-            resolve(log)
-          })
-        })
-      }
+      await instance.createMeetup(postIpfsHash_A)
 
-      var title = 'Hello'
-      var desc = 'World'
-      var location = 'earth'
-      var tags = 'foo, bar'
-      var image = 'QmQXNrAUm5ykgWuH7PMKM98d5ezMKSqEBg3KSmC1KuQAco'
-      var start = moment().unix()
-      var end = moment().add(1, 'hour').unix()
+      var eventObj = await getLastEvent(instance)
+      assert.equal(eventObj.event, '_MeetupCreated')
 
-      // create meetup
-      var result = await instance.createMeetup(
-        title,
-        desc,
-        location,
-        tags,
-        image,
-        start,
-        end
-      )
-      assert.ok(result.tx)
-
-      var eventObj = await lastEvent()
-      assert.equal(eventObj.event, 'MeetupCreated')
-
-      // get all meetup hashes
-      var meetupHashes = await instance.getAllMeetupHashes.call()
-      assert.equal(meetupHashes.length, 1)
-
-      // get all meetup hashes for organizer
-      meetupHashes = await instance.getMeetupHashesByOrganizer.call(organizer)
-      console.log(meetupHashes)
-      assert.equal(meetupHashes.length, 1)
-      assert.equal(typeof meetupHashes[0], 'string')
-
-      // get meetup details for meetup hash
-      var meetup = await instance.getMeetupByHash.call(meetupHashes[0])
-      var [
-        id,
-        title,
-        description,
-        location,
-        tags,
-        image,
-        startTimestamp,
-        endTimestamp,
-        createdTimestamp
-      ] = meetup
-      console.log(meetup)
-      var _organizer = meetup[meetup.length - 1]
-      tags = tags.split(',').map(x => x.trim())
-      assert.ok(id.length > 0)
-      assert.equal(title, 'Hello')
-      assert.equal(description, 'World')
-      assert.equal(location, 'earth')
-      assert.deepEqual(tags, ['foo', 'bar'])
-      assert.equal(image, 'QmQXNrAUm5ykgWuH7PMKM98d5ezMKSqEBg3KSmC1KuQAco')
-      assert.equal(_organizer, organizer)
-
-      // delete meetup
-      var deleted = await instance.deleteMeetupByHash(meetupHashes[0])
-      assert.ok(result.tx)
-
-      var eventObj = await lastEvent()
-      assert.equal(eventObj.event, 'MeetupDeleted')
-
-      meetupHashes = await instance.getMeetupHashesByOrganizer.call(organizer)
-      assert.equal(meetupHashes.length, 0)
-      //assert.notOk(meetup)
-
-      try {
-        // check meetup is deleted
-        meetup = await instance.getMeetup.call(meetupHashes[0])
-        console.error('this should not work', meetup)
-
-      } catch(error) {
-        assert.ok(error)
-      }
+      var [id, org, meetupHash] = await instance.getMeetup(1)
+      assert.equal(org, organizer)
+      assert.equal(meetupHash, postIpfsHash_A)
+      assert.equal(id, 1)
     } catch(error) {
+      console.error(error)
       assert.equal(error, undefined)
     }
-
-    meetupHashes = await instance.getAllMeetupHashes.call()
-    assert.equal(meetupHashes.length, 0)
   })
-})
 
-contract('Meetup', function(accounts) {
-  it('should throw if empty title', async function() {
-    var organizer = accounts[0]
-
-    try {
-      var instance = await Meetup.deployed()
-
-      var title = ''
-      var desc = 'foo'
-      var location = 'earth'
-      var tags = 'bar'
-      var image = ''
-      var start = moment().unix()
-      var end = moment().unix()
-
-      try {
-        var result = await instance.createMeetup(
-          title,
-          desc,
-          location,
-          tags,
-          image,
-          start,
-          end
-        )
-
-        assert.notOk(result)
-      } catch(error) {
-        assert.ok(error)
-      }
-    } catch(error) {
-      assert.notOk(error)
-    }
-  })
-})
-
-contract('Meetup', function(accounts) {
-  it('should throw if empty description', async function() {
-    var organizer = accounts[0]
-
-    try {
-      var instance = await Meetup.deployed()
-
-      var title = 'foo'
-      var desc = ''
-      var location = 'earth'
-      var tags = 'bar'
-      var image = ''
-      var start = moment().unix()
-      var end = moment().unix()
-
-      try {
-        var result = await instance.createMeetup(
-          title,
-          desc,
-          location,
-          tags,
-          image,
-          start,
-          end
-        )
-
-        assert.notOk(result)
-      } catch(error) {
-        assert.ok(error)
-      }
-    } catch(error) {
-      assert.notOk(error)
-    }
-  })
-})
-
-contract('Meetup', function(accounts) {
-  it('should throw if empty location', async function() {
-    var organizer = accounts[0]
-
-    try {
-      var instance = await Meetup.deployed()
-
-      var title = 'foo'
-      var desc = 'bar'
-      var location = ''
-      var tags = 'baz'
-      var image = ''
-      var start = moment().unix()
-      var end = moment().unix()
-
-      try {
-        var result = await instance.createMeetup(
-          title,
-          desc,
-          location,
-          tags,
-          image,
-          start,
-          end
-        )
-
-        assert.notOk(result)
-      } catch(error) {
-        assert.ok(error)
-      }
-    } catch(error) {
-      assert.notOk(error)
-    }
-  })
-})
-
-contract('Meetup', function(accounts) {
-  it('should throw if invalid image multihash', async function() {
-    var organizer = accounts[0]
-
-    try {
-      var instance = await Meetup.deployed()
-
-      var title = 'foo'
-      var desc = 'bar'
-      var location = 'earth'
-      var tags = 'baz'
-      var image = 'notvalidhash'
-      var start = moment().unix()
-      var end = moment().unix()
-
-      try {
-        var result = await instance.createMeetup(
-          title,
-          desc,
-          location,
-          tags,
-          image,
-          start,
-          end
-        )
-
-        assert.notOk(result)
-      } catch(error) {
-        assert.ok(error)
-      }
-    } catch(error) {
-      assert.notOk(error)
-    }
-  })
-})
-
-contract('Meetup', function(accounts) {
-  it('should not throw if empty image', async function() {
-    var organizer = accounts[0]
-
-    try {
-      var instance = await Meetup.deployed()
-
-      var title = 'foo'
-      var desc = 'bar'
-      var location = 'earth'
-      var tags = 'baz'
-      var image = ''
-      var start = moment().unix()
-      var end = moment().unix()
-
-      try {
-        var result = await instance.createMeetup(
-          title,
-          desc,
-          location,
-          tags,
-          image,
-          start,
-          end
-        )
-
-        assert.ok(result)
-      } catch(error) {
-        assert.notOk(error)
-      }
-    } catch(error) {
-      assert.notOk(error)
-    }
-  })
-})
-
-contract('Meetup', function(accounts) {
   it('should be able to edit a meetup', async function() {
     var organizer = accounts[0]
 
     try {
       var instance = await Meetup.deployed()
 
-      var title = 'foo'
-      var desc = 'bar'
-      var location = 'earth'
-      var tags = 'baz'
-      var image = 'QmQXNrAUm5ykgWuH7PMKM98d5ezMKSqEBg3KSmC1KuQAco'
-      var start = moment().unix()
-      var end = moment().add(1, 'hour').unix()
+      var id = 1
+      var [id_2, org_2, meetupHash_2] = await instance.getMeetup(id)
+      assert.equal(id_2, id)
+      assert.equal(org_2, organizer)
+      assert.equal(meetupHash_2, postIpfsHash_A)
 
-      var result = await instance.createMeetup(
-        title,
-        desc,
-        location,
-        tags,
-        image,
-        start,
-        end
-      )
-      assert.ok(result.tx)
+      await instance.editMeetup(id, postIpfsHash_B)
 
-      var meetupHashes = await instance.getAllMeetupHashes.call()
-      assert.equal(meetupHashes.length, 1)
+      var eventObj = await getLastEvent(instance)
+      assert.equal(eventObj.event, '_MeetupUpdated')
 
-      var meetup = await instance.getMeetupByHash.call(meetupHashes[0])
-      assert.ok(meetup)
-
-      var id = meetup.id
-      var newTitle = 'qux'
-      var newDesc = 'corge'
-      var newLocation = 'pluto'
-      var newTags = 'george'
-      var newImage = 'QmdDwGcLoD3jWeGSG955PovB7nHQ6m5RSCcHJqnzenNd3e'
-      var newStart = moment().subtract(1, 'hour').unix()
-      var newEnd = moment().add(2, 'hour').unix()
-
-      var edit = await instance.editMeetup(
-        id,
-        NewTitle,
-        newDesc,
-        newLocation,
-        newTags,
-        newImage,
-        newStart,
-        newEnd
-      )
-      assert.ok(result.tx)
-
-      meetup = await instance.getMeetupByHash.call(meetupHashes[0])
-      assert.ok(meetup.id, id)
-      assert.ok(meetup.title, newTitle)
-      assert.ok(meetup.description, newDescription)
-      assert.ok(meetup.location, newLocation)
-      assert.ok(meetup.tags, newTags)
-      assert.ok(meetup.image, newImage)
-      assert.ok(meetup.startTimestamp, newStart)
-      assert.ok(meetup.endTimestamp, newEnd)
+      var [id_3, org_3, meetupHash_3] = await instance.getMeetup(id)
+      assert.equal(id_3, id)
+      assert.equal(org_3, organizer)
+      assert.equal(meetupHash_3, postIpfsHash_B)
 
     } catch(error) {
-
+      console.error(error)
+      assert.equal(error, undefined)
     }
-  });
-});
+  })
+})

@@ -5,8 +5,8 @@ const ReactDOM = require('react-dom')
 const {getInstance} = require('../services/contract')
 const {getDefaultAccount} = require('../services/account')
 
-const Spinner = require('./Spinner.jsx')
-const Comments = require('./Comments.jsx')
+const Spinner = require('./Spinner.js')
+const Comments = require('./Comments.js')
 
 function formatDate(timestamp, format='MM/DD/YYYY hh:mmA') {
   return moment.unix(timestamp).format(format)

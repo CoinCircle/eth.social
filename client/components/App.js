@@ -7,14 +7,14 @@ const {
   Link
 } = require('react-router-dom')
 
-const NewMeetup = require('./NewMeetup.jsx')
-const EditMeetup = require('./EditMeetup.jsx')
-const Meetups = require('./Meetups.jsx')
-const Meetup = require('./Meetup.jsx')
-const TopMenu = require('./TopMenu.jsx')
-const About = require('./About.jsx')
-const Help = require('./Help.jsx')
-const Footer = require('./Footer.jsx')
+const NewMeetup = require('./NewMeetup.js')
+const EditMeetup = require('./EditMeetup.js')
+const Meetups = require('./Meetups.js')
+const Meetup = require('./Meetup.js')
+const TopMenu = require('./TopMenu.js')
+const About = require('./About.js')
+const Help = require('./Help.js')
+const Footer = require('./Footer.js')
 
 class App extends React.Component {
   render() {
