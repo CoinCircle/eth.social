@@ -8,7 +8,9 @@
   },
   "scripts": {
     "test": "truffle test",
-    "testrpc": "testrpc --account=100"
+    "testrpc": "testrpc --account=100",
+    "deploy:testrpc": "truffle migrate --reset --network=development",
+    "deploy:rinkeby": "truffle migrate --reset --network=rinkeby"
   },
   "repository": {
     "type": "git",

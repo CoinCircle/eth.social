@@ -1,58 +1,15 @@
-const InputDataDecoder = require('ethereum-input-data-decoder')
+const tc = require('truffle-contract')
 
-const contractConfig = require('../config/contract.js')
-const contractAddress = contractConfig.Meetup.address;
-
-console.log(contractAddress)
-
-const abiJson = require('../../build/contracts/Meetup.json')
-const abiArray = abiJson.abi
-
+const {getJson, ipfsUrl} = require('../services/ipfs')
+const Meetup = require('../../build/contracts/Meetup.json')
 const {DEFAULT_MEETUP_IMAGE} = require('../constants/defaults')
-const ipfsUrl = require('../utils/ipfsUrl')
-
-const decoder = new InputDataDecoder(abiArray)
 
 let contract = null;
-
-function meetupArrayToObject(meetup) {
-  let [
-    id,
-    title,
-    description,
-    location,
-    tags,
-    image,
-    startTimestamp,
-    endTimestamp,
-    createdTimestamp,
-    organizer
-  ] = meetup
-
-  startTimestamp = startTimestamp.toNumber()
-  endTimestamp = endTimestamp.toNumber()
-  createdTimestamp = createdTimestamp.toNumber()
-
-  const imageUrl = ipfsUrl(image || DEFAULT_MEETUP_IMAGE);
-
-  return {
-    id,
-    title,
-    description,
-    location,
-    tags,
-    image,
-    startTimestamp,
-    endTimestamp,
-    createdTimestamp,
-    organizer,
-    imageUrl
-  }
-}
 
 class Contract {
   constructor() {
     this.instance = null
+    this.account = null
   }
 
   setContractInstance(instance) {
@@ -69,76 +26,24 @@ class Contract {
     })
   }
 
-  createMeetup({
-    title,
-    description,
-    location,
-    tags,
-    image,
-    startTimestamp,
-    endTimestamp
-  }) {
-    if (!this.instance) {
-      return Promise.reject()
-    }
-
-    return new Promise((resolve, reject) => {
-      this.instance.createMeetup(
-        title,
-        description,
-        location,
-        tags,
-        image,
-        startTimestamp,
-        endTimestamp,
-      (error, tx) => {
-        if (error) return reject(error)
-        resolve(tx)
-
-        web3.eth.getTransaction(tx, (error, result) => {
-          console.log(error, result)
-          const decoded = decoder.decodeData(result.input);
-          console.log(decoded)
-        })
-      })
-    })
+  setAccount (account) {
+    this.account = account
   }
 
-  editMeetup({
-    id,
-    title,
-    description,
-    location,
-    tags,
-    image,
-    startTimestamp,
-    endTimestamp
-  }) {
+  createMeetup({ ipfsHash }) {
     if (!this.instance) {
       return Promise.reject()
     }
 
-    return new Promise((resolve, reject) => {
-      this.instance.editMeetup(
-        id,
-        title,
-        description,
-        location,
-        tags,
-        image,
-        startTimestamp,
-        endTimestamp,
-      (error, tx) => {
-        if (error) return reject(error)
-        resolve(tx)
+    return this.instance.createMeetup(ipfsHash, {from: this.account})
+  }
 
-        web3.eth.getTransaction(tx, (error, result) => {
-          console.log(error, result)
-          const decoded = decoder.decodeData(result.input);
-          console.log(decoded)
-        })
-      })
-    })
+  editMeetup({ id, ipfsHash }) {
+    if (!this.instance) {
+      return Promise.reject()
+    }
+
+    return this.instance.editMeetup(id, ipfsHash, {from: this.account})
   }
 
   getAllMeetups(organizer) {
@@ -146,44 +51,40 @@ class Contract {
       return Promise.reject()
     }
 
-    return new Promise((resolve, reject) => {
-      this.instance.getAllMeetupHashes.call(
-      (error, meetupHashes) => {
-        if (error) return reject(error)
-        console.log(meetupHashes)
+    return new Promise(async (resolve, reject) => {
+      let meetups = []
 
-        const promises = meetupHashes.map(hash => {
-          return new Promise((resolve, reject) => {
-            this.instance.getMeetupByHash.call(hash, (error, result) => {
-              if (error) reject(error)
+      for (let i = 1; i < 99; i++) {
+        const meetup = await this.getMeetupById(i)
 
-              resolve(meetupArrayToObject(result))
-            })
-          })
-        })
+        if (!parseInt(meetup.organizer, 16)) {
+          break
+        } else {
+          if (meetup.title) {
+            meetups.push(meetup)
+          }
+        }
+      }
 
-        Promise.all(promises)
-        .then(results => {
-          resolve(results)
-        })
-      })
+      resolve(meetups)
     })
   }
 
-  getMeetupById(id) {
+  async getMeetupById(id) {
     if (!this.instance) {
       return Promise.reject()
     }
 
-    return new Promise((resolve, reject) => {
-      this.instance.getMeetupByHash.call(
-      id,
-      (error, result) => {
-        if (error) return reject(error)
+    const [_id, organizer, ipfsHash] = await this.instance.getMeetup(id)
 
-        resolve(meetupArrayToObject(result))
-      })
-    })
+    const json = await getJson(ipfsHash)
+    json.id = _id.toNumber()
+    json.tags = json.tags || []
+    json.title = json.title || ''
+    json.description = json.description || ''
+    json.imageUrl = ipfsUrl(json.image || DEFAULT_MEETUP_IMAGE);
+    json.organizer = organizer
+    return json
   }
 
   deleteMeetupById(id) {
@@ -203,43 +104,29 @@ class Contract {
   }
 }
 
-function setupWeb3() {
-  const Web3 = require('web3')
-  const web3 = new Web3()
+function getProvider() {
+  if (window.web3) {
+    return window.web3.currentProvider
+  }
 
-  const providerUrl = 'https://kovan.infura.io:443'
-  const provider = new Web3.providers.HttpProvider(providerUrl)
-  web3.setProvider(provider)
+  const providerUrl = 'https://rinkeby.infura.io:443'
+  const provider = new window.Web3.providers.HttpProvider(providerUrl)
 
-  return web3
+  return provider
 }
 
-function init() {
+async function init() {
   contract = new Contract()
 
-  if (!(window.web3 instanceof Object)) {
-    console.info('web3 object not found')
-    //alert('web3 object not found')
+  let instance = tc(Meetup)
+  instance.setProvider(getProvider())
+  instance = await instance.deployed()
 
-    window.web3 = setupWeb3()
+  contract.setContractInstance(instance)
+
+  if (window.web3) {
+    contract.setAccount(web3.eth.defaultAccount || web3.eth.accounts[0])
   }
-
-  if (web3.currentProvider.isMetaMask !== true) {
-    //alert('Please install MetaMask Extension for access.')
-    //return false;
-  }
-
-  if (!web3.eth.defaultAccount) {
-    web3.eth.defaultAccount = web3.eth.accounts[0]
-  }
-
-  if (!web3.eth.defaultAccount) {
-    console.error('No default account set')
-  }
-
-  const MeetupContract = web3.eth.contract(abiArray)
-
-  contract.setContractInstance(MeetupContract.at(contractAddress))
 }
 
 function getInstance() {
@@ -247,8 +134,8 @@ function getInstance() {
 }
 
 // wait for MetaMask to inject Web3
-setTimeout(() => {
-  init()
+setTimeout(async () => {
+  await init()
 }, 1000)
 
 module.exports = {

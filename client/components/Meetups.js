@@ -30,7 +30,7 @@ class Meetups extends React.Component {
       .then(() => {
         this.setState({showSpinner: false})
       })
-    }, 1100)
+    }, 2000)
   }
 
   render() {
@@ -58,13 +58,13 @@ class Meetups extends React.Component {
                   <div className="ui grid stackable">
                     <div className="column four wide">
                       <div className="ui bordered image fluid">
-                        <a href={`#/meetup/${meetup.id}`}><img src={meetup.imageUrl} alt="" /></a>
+                        <a href={`#/meetups/${meetup.id}`}><img src={meetup.imageUrl} alt="" /></a>
                       </div>
                     </div>
                     <div className="column six wide">
                       <div className="content">
                         <div className="ui large header">
-                          <a href={`#/meetup/${meetup.id}`}>{meetup.title}</a>
+                          <a href={`#/meetups/${meetup.id}`}>{meetup.title}</a>
                         </div>
                         <div className="description">
                           {meetup.description}
@@ -74,11 +74,11 @@ class Meetups extends React.Component {
                     <div className="column six wide">
                     <div className="content">
                         <div className="meta">
-                          <p><i className="icon wait"></i> {formatDate(meetup.startTimestamp, 'dddd, MMMM DD, hh:mmA')}</p>
+                          <p><i className="icon wait"></i> {formatDate(meetup.start, 'dddd, MMMM DD, hh:mmA')}</p>
                           <p><i className="icon marker"></i> <a href={`https://www.google.com/maps?q=${meetup.location}`} target="_blank">{meetup.location}</a></p>
                         </div>
                         <div className="extra">
-                          <p><i className="icon tag"></i>{meetup.tags.split(',').map((tag, i) => {
+                          <p><i className="icon tag"></i>{meetup.tags.map((tag, i) => {
                             return <span className="ui tiny label" key={i}>{tag}</span>
                           })}</p>
                           <p><small
@@ -91,7 +91,7 @@ class Meetups extends React.Component {
                             style={{whiteSpace: 'nowrap'}}
                           ><i className="icon linkify"></i>
                           &nbsp;
-                          <a href={`#/meetup/${meetup.id}`}
+                          <a href={`#/meetups/${meetup.id}`}
                           style={{display: 'inline-block', maxWidth:'100%', overflow: 'auto'}}
                           >{meetup.id}</a></small></p>
                           <p><small>Created {formatDate(meetup.createdTimestamp)}</small></p>
@@ -111,8 +111,7 @@ class Meetups extends React.Component {
   }
 
   getMeetups() {
-    return getInstance()
-    .getAllMeetups()
+    return getInstance().getAllMeetups()
     .then(meetups => {
       console.log(meetups)
       this.setState({meetups})

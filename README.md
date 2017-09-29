@@ -4,7 +4,7 @@
 
 <img src="./screenshot.png" width="700">
 
-Proof of Concept
+Proof of Concept. On Rinkeby testnet.
 
 **[https://eth.social](https://eth.social)**
 

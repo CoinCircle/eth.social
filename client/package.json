@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "npm run browser",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "watchify -t [ babelify --presets [ react ] ] index.js -o public/dist/bundle.js",
     "browser": "browser-sync start --server --files 'public/assets/**/*' --ss public/",
@@ -21,12 +22,14 @@
     "react-dom": "^15.5.4",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
+    "truffle-contract": "^3.0.0",
     "web3": "^0.19.0"
   },
   "devDependencies": {
     "babel-preset-react": "^6.24.1",
     "babelify": "^7.3.0",
     "browserify": "^14.4.0",
+    "standard": "^10.0.3",
     "watchify": "^3.9.0"
   }
 }

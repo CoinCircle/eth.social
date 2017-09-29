@@ -26,8 +26,8 @@ class App extends React.Component {
           <Route exact path="/" component={Meetups}/>
           <Route exact path="/meetups" component={Meetups}/>
           <Route exact path="/meetup/new" component={NewMeetup}/>
-          <Route exact path="/meetup/:id([0-9a-fA-f]{66})/edit" component={EditMeetup}/>
-          <Route exact path="/meetup/:id([0-9a-fA-f]{66})" component={Meetup}/>
+          <Route exact path="/meetups/:id([0-9]+)/edit" component={EditMeetup}/>
+          <Route exact path="/meetups/:id([0-9]+)" component={Meetup}/>
           <Route exact path="/about" component={About}/>
           <Route exact path="/help" component={Help}/>
         </div>

@@ -5,18 +5,18 @@ const Datetime = require('react-datetime')
 
 const Spinner = require('./Spinner.js')
 const {getInstance} = require('../services/contract')
-const {uploadFile, uploadFromUrl} = require('../services/upload')
-const ipfsUrl = require('../utils/ipfsUrl')
+const {ipfsUrl, uploadJson, uploadFile, uploadFromUrl} = require('../services/ipfs')
 const {DEFAULT_MEETUP_IMAGE} = require('../constants/defaults')
 
 const defaultMeetup = {
   title: '',
   description: '',
   location: '',
-  tags: '',
+  tags: [],
   image: '',
-  startTimestamp: moment().add(1, 'day').startOf('hour').unix(),
-  endTimestamp: moment().add(1, 'day').add(4, 'hour').startOf('hour').unix()
+  start: moment().add(1, 'day').startOf('hour').unix(),
+  end: moment().add(1, 'day').add(4, 'hour').startOf('hour').unix(),
+  organizer: ''
 }
 
 class EditMeetup extends React.Component {
@@ -106,7 +106,7 @@ class EditMeetup extends React.Component {
               <input
                 type="text"
                 placeholder="pets, beach, social"
-                defaultValue={meetup.tags}
+                defaultValue={meetup.tags.join(',')}
                 onChange={this.onTagsChange.bind(this)}
               />
             </div>
@@ -150,14 +150,14 @@ class EditMeetup extends React.Component {
           <div className="field required">
             <label><i className="icon wait"></i> Start Date</label>
             <Datetime
-              defaultValue={moment.unix(meetup.startTimestamp)}
+              defaultValue={moment.unix(meetup.start)}
               onChange={this.onStartDateChange.bind(this)}
             />
           </div>
           <div className="field required">
             <label><i className="icon wait"></i> End Date</label>
             <Datetime
-              defaultValue={moment.unix(meetup.endTimestamp)}
+              defaultValue={moment.unix(meetup.end)}
               onChange={this.onEndDateChange.bind(this)}
             />
           </div>
@@ -201,7 +201,7 @@ class EditMeetup extends React.Component {
 
   onTagsChange(event) {
     const {meetup} = this.state
-    meetup.tags = event.target.value.split(',').map(x => x.trim()).join(',')
+    meetup.tags = event.target.value.split(',').map(x => x.trim())
     this.setState({meetup})
   }
 
@@ -252,47 +252,49 @@ class EditMeetup extends React.Component {
 
   onStartDateChange(momentDate) {
     const {meetup} = this.state
-    meetup.startTimestamp = momentDate.unix()
+    meetup.start = momentDate.unix()
     this.setState({meetup})
   }
 
   onEndDateChange(momentDate) {
     const {meetup} = this.state
-    meetup.endTimestamp = momentDate.unix()
+    meetup.end = momentDate.unix()
     this.setState({meetup})
   }
 
-  handleSubmit(event) {
-    event.preventDefault()
-
-    getInstance()
-    .createMeetup(this.state.meetup)
-    .then(tx => {
-      console.log(tx)
-      window.location.href = '#meetups'
-    })
-    .catch(error => {
-      console.error(error)
-      alert(error)
-    })
-  }
-
-  handleEditSubmit(event) {
+  async handleSubmit(event) {
     event.preventDefault()
 
     const {meetup} = this.state
-    console.log(meetup)
+    meetup.organizer = getInstance().account
 
-    getInstance()
-    .editMeetup(meetup)
-    .then(tx => {
-      console.log(tx)
-      window.location.href = `#/meetup/${meetup.id}`
-    })
-    .catch(error => {
-      console.error(error)
+    const [result] = await uploadJson(meetup)
+    const {hash:ipfsHash} = result
+
+    try {
+      await getInstance().createMeetup({ipfsHash})
+      window.location.href = '#meetups'
+    } catch (error) {
       alert(error)
-    })
+    }
+  }
+
+  async handleEditSubmit(event) {
+    event.preventDefault()
+
+    const {meetup} = this.state
+    const {id} = meetup
+    meetup.organizer = getInstance().account
+
+    const [result] = await uploadJson(meetup)
+    const {hash:ipfsHash} = result
+
+    try {
+      await getInstance().editMeetup({id, ipfsHash})
+      window.location.href = `#/meetups/${id}`
+    } catch (error) {
+      alert(error)
+    }
   }
 
   getMeetup() {

@@ -15,7 +15,6 @@ function formatDate(timestamp, format='MM/DD/YYYY hh:mmA') {
 class Meetup extends React.Component {
  constructor(props) {
     super(props)
-
     const {id} = props.match.params
 
     this.state = {
@@ -33,7 +32,7 @@ class Meetup extends React.Component {
       .then(() => {
         this.setState({showSpinner: false})
       })
-    }, 1100)
+    }, 2000)
   }
 
   render() {
@@ -67,13 +66,13 @@ class Meetup extends React.Component {
                   <div className="ui grid stackable">
                     <div className="column four wide">
                       <div className="ui bordered image fluid">
-                        <a href={`#/meetup/${meetup.id}`}><img src={meetup.imageUrl} alt="" /></a>
+                        <a href={`#/meetups/${meetup.id}`}><img src={meetup.imageUrl} alt="" /></a>
                       </div>
                     </div>
                     <div className="column six wide">
                       <div className="content">
                         <div className="ui large header">
-                          <a href={`#/meetup/${meetup.id}`}>{meetup.title}</a>
+                          <a href={`#/meetups/${meetup.id}`}>{meetup.title}</a>
                         </div>
                         <div className="description">
                           {meetup.description}
@@ -83,12 +82,12 @@ class Meetup extends React.Component {
                     <div className="column six wide">
                     <div className="content">
                         <div className="meta">
-                          <p><i className="icon wait"></i> Starts {formatDate(meetup.startTimestamp, 'dddd, MMMM DD, hh:mmA')}</p>
-                          <p><i className="icon wait"></i> Ends {formatDate(meetup.endTimestamp, 'MMMM DD, hh:mmA')}</p>
+                          <p><i className="icon wait"></i> Starts {formatDate(meetup.start, 'dddd, MMMM DD, hh:mmA')}</p>
+                          <p><i className="icon wait"></i> Ends {formatDate(meetup.end, 'MMMM DD, hh:mmA')}</p>
                           <p><i className="icon marker"></i> <a href={`https://www.google.com/maps?q=${meetup.location}`} target="_blank">{meetup.location}</a></p>
                         </div>
                         <div className="extra">
-                          <p><i className="icon tag"></i>{meetup.tags.split(',').map((tag, i) => {
+                          <p><i className="icon tag"></i>{meetup.tags.map((tag, i) => {
                             return <span className="ui tiny label">{tag}</span>
                           })}</p>
                           <p><small
@@ -101,7 +100,7 @@ class Meetup extends React.Component {
                             style={{whiteSpace: 'nowrap'}}
                           ><i className="icon linkify"></i>
                           &nbsp;
-                          <a href={`#/meetup/${meetup.id}`}
+                          <a href={`#/meetups/${meetup.id}`}
                           style={{display: 'inline-block', maxWidth:'100%', overflow: 'auto'}}
                           >{meetup.id}</a></small></p>
                           <p><small>Created {formatDate(meetup.createdTimestamp)}</small></p>
@@ -115,7 +114,7 @@ class Meetup extends React.Component {
                 [<div className="ui divider"></div>,
                 <div className="ui tiny buttons">
                   <a
-                    href={`#/meetup/${id}/edit`}
+                    href={`#/meetups/${id}/edit`}
                     className="ui tiny icon blue button">
                     <i className="icon edit"></i>
                     Edit
@@ -139,7 +138,6 @@ class Meetup extends React.Component {
 
   getMeetup() {
     const {id} = this.state
-
     return getInstance()
     .getMeetupById(id)
     .then(meetup => {
