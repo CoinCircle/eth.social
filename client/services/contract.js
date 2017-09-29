@@ -66,7 +66,7 @@ class Contract {
         }
       }
 
-      resolve(meetups)
+      resolve(meetups.reverse())
     })
   }
 
