@@ -119075,8 +119075,7 @@ module.exports = {
 (function (Buffer){
 const ipfsApi = require('ipfs-api');
 
-//const ipfs = ipfsApi('127.0.0.1', '5001')
-const ipfs = ipfsApi('ipfsd.eth.social', '5001');
+const ipfs = ipfsApi('ipfsd.eth.social', '443');
 
 function uploadJson(obj) {
   return ipfs.add(Buffer.from(JSON.stringify(obj)));
@@ -119117,8 +119116,6 @@ async function getJson(ipfsHash) {
 
 function ipfsUrl(hash) {
   return `https://gateway.ipfs.io/ipfs/${hash}`;
-  //return `http://ipfsd.eth.social/ipfs/${hash}`
-  //return `http://localhost:9001/ipfs/${hash}`
 }
 
 module.exports = {
