@@ -14,6 +14,8 @@ On Rinkeby testnet.
 
 <img src="./diagrams/ethsocial-containers-view.png" width="400">
 
+NOTE: server and database not implemented yet. Currently this is a humble MVP.
+
 # Development
 
 Watch and compile client
