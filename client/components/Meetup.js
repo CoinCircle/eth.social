@@ -76,12 +76,8 @@ class Meetup extends React.Component {
                           <p><i className="icon tag"></i>{meetup.tags.map((tag, i) => {
                             return <span className="ui tiny label" key={i}>{tag}</span>
                           })}</p>
-                          <p><small
-                            style={{whiteSpace: 'nowrap'}}
-                          ><i className="icon user"></i>&nbsp;
-                          <a href={`#/organizer/${meetup.organizer}`}
-                          style={{display: 'inline-block', maxWidth:'100%', overflow: 'auto'}}
-                          >{meetup.organizer}</a></small></p>
+                          <p><small><i className="icon user"></i>&nbsp;
+                          <a href={`#/organizer/${meetup.organizer}`} >{meetup.organizer}</a></small></p>
                           <div className="ui label">{meetup.id}</div>
 
                           <p><small>Created {formatDate(meetup.created)}</small></p>

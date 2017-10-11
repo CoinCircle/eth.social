@@ -2,13 +2,17 @@
 
 > An Ethereum dApp for posting social events.
 
-<img src="./screenshot.png" width="700">
+<img src="./screenshots/ethsocial_home.png" width="800">
 
-Proof of Concept. On Rinkeby testnet.
+On Rinkeby testnet.
 
 # Demo
 
 **[https://eth.social](https://eth.social)**
+
+# Architecture
+
+<img src="./diagrams/ethsocial-containers-view.png" width="600">
 
 # Development
 

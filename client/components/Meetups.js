@@ -86,9 +86,7 @@ class Meetups extends React.Component {
                           </div>
                         </div>
                         <div className="column sixteen wide MeetupRowMeta">
-                          <a href={`#/meetups/${meetup.id}`}
-                          style={{display: 'inline-block', maxWidth:'100%', overflow: 'auto'}}
-                        >
+                          <a href={`#/meetups/${meetup.id}`}>
                           <span className="ui label">
                             {meetup.id}
                           </span>

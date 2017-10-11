@@ -1389,16 +1389,12 @@ class Meetup extends React.Component {
                       null,
                       React.createElement(
                         'small',
-                        {
-                          style: { whiteSpace: 'nowrap' }
-                        },
+                        null,
                         React.createElement('i', { className: 'icon user' }),
                         '\xA0',
                         React.createElement(
                           'a',
-                          { href: `#/organizer/${meetup.organizer}`,
-                            style: { display: 'inline-block', maxWidth: '100%', overflow: 'auto' }
-                          },
+                          { href: `#/organizer/${meetup.organizer}` },
                           meetup.organizer
                         )
                       )
@@ -1631,9 +1627,7 @@ class Meetups extends React.Component {
                       { className: 'column sixteen wide MeetupRowMeta' },
                       React.createElement(
                         'a',
-                        { href: `#/meetups/${meetup.id}`,
-                          style: { display: 'inline-block', maxWidth: '100%', overflow: 'auto' }
-                        },
+                        { href: `#/meetups/${meetup.id}` },
                         React.createElement(
                           'span',
                           { className: 'ui label' },
@@ -118745,6 +118739,7 @@ module.exports = function webcryptoShim (global) {
         global.CryptoKey = CryptoKey;
     }
 
+    /*
     if ( isWebkit ) {
         _crypto.subtle = _subtle;
 
@@ -118752,6 +118747,7 @@ module.exports = function webcryptoShim (global) {
         global.SubtleCrypto = _SubtleCrypto;
         global.CryptoKey = CryptoKey;
     }
+    */
 }
 
 },{}],871:[function(require,module,exports){
