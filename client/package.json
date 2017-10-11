@@ -23,7 +23,8 @@
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
     "truffle-contract": "^3.0.0",
-    "web3": "^0.19.0"
+    "web3": "^0.19.0",
+    "web3-detect-network": "0.0.4"
   },
   "devDependencies": {
     "babel-preset-react": "^6.24.1",

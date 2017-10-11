@@ -40,7 +40,7 @@
 
 html,
 body {
-  background: #f7f7f7;
+  background: #fafafa;
 }
 
 body {
@@ -51,7 +51,7 @@ body,
 .ui.header,
 .ui.items>.item>.content a:not(.ui),
 :root:root .ui.menu .item {
-  font-family: 'Exo 2', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
 }
 
 body,
@@ -62,6 +62,32 @@ body,
 :root:root .statistic .label,
 :root:root .statistic .value {
   color: #4A4A4A;
+}
+
+body::-webkit-scrollbar,
+.overflow-x::-webkit-scrollbar,
+.overflow-y::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+body::-webkit-scrollbar-track,
+.overflow-x::-webkit-scrollbar-track,
+.overflow-y::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+body::-webkit-scrollbar-thumb,
+.overflow-x::-webkit-scrollbar-thumb,
+.overflow-y::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border: 1px solid #ccc;
+}
+
+body::-webkit-scrollbar-thumb:hover,
+.overflow-x::-webkit-scrollbar-thumb:hover,
+.overflow-y::-webkit-scrollbar-thumb:hover {
+  background-color: #aaa;
 }
 
 a {
@@ -99,6 +125,12 @@ small {
   display: flex;
   align-items: center;
 }
+
+:root:root:root:root:root .MainContentContainer {
+  max-width: 1200px;
+  margin: 0 auto !important;
+}
+
 .HomeHero {
   width: 100%;
   padding: 100px 20px;
@@ -111,7 +143,9 @@ small {
 }
 
 
-.TopMenu {
+:root:root:root .TopMenu {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .TopMenu .menu {
@@ -122,6 +156,7 @@ small {
 
 .TopMenuFirst {
   overflow: auto;
+  box-shadow: 0 1px 1px #b7b7b7;
 }
 
 .MeetupsGrid,
@@ -129,6 +164,89 @@ small {
 .MeetupsGrid .item .grid,
 .MeetupGrid .item .grid {
   width: 100%;
+}
+
+.BoxFrame {
+  background: #fff;
+  padding: 0.2em;
+  box-shadow: 0 1px 1px #b7b7b7;
+}
+
+:root:root:root .MeetupRow {
+  margin-bottom: 3rem;
+}
+
+:root:root:root .MeetupRow .BoxFrame {
+  margin: 0 auto;
+  min-height: 185px;
+}
+
+:root:root:root .MeetupRow .image {
+  height: 100px;
+  width: 150px;
+  flex: 0 0 150px;
+  margin-right: 1rem;
+}
+
+:root:root:root .MeetupRow .image a {
+  display: block;
+}
+
+:root:root:root .MeetupRow .image img {
+  width: 150px;
+  height: 100px;
+  object-fit: cover;
+  background: #fafafa;
+  border: 1px solid transparent;
+  transition: all 0.2s ease-out;
+}
+
+:root:root:root .MeetupRow .image img:hover {
+  border-color: #ccc;
+}
+
+.MeetupRowDate {
+  font-size: 1.3em;
+}
+
+:root:root:root:root:root .MeetupRowContent {
+  display: flex;
+  justify-content: flex-start;
+}
+
+:root:root:root:root:root .MeetupRowTitle {
+  max-height: 60px;
+  overflow: auto;
+}
+
+:root:root:root:root:root .MeetupRowTitle a {
+  display: block;
+}
+
+:root:root:root:root:root .MeetupRowContent .description {
+  max-height: 60px;
+  overflow: auto;
+}
+
+:root:root:root:root:root .MeetupRowMeta {
+  font-size: 0.8em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fafafa;
+  padding: 0.2rem 1rem;
+}
+
+@media (max-width: 760px) {
+  :root:root:root:root:root .MeetupRowMeta {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+}
+
+:root:root:root:root:root .MeetupRowMeta datetime {
+  opacity: 0.5;
 }
 
 .SiteFooter {

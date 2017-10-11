@@ -4,6 +4,7 @@ const ReactDOM = require('react-dom')
 
 const {getInstance} = require('../services/contract')
 const {getDefaultAccount} = require('../services/account')
+const {uploadJson} = require('../services/ipfs')
 
 const Spinner = require('./Spinner.js')
 const Comments = require('./Comments.js')
@@ -23,16 +24,14 @@ class Meetup extends React.Component {
       showSpinner: true
     }
 
-    setTimeout(() => {
-      this.getMeetup()
-      .then(() => {})
-      .catch(() => {
-        window.location.href = '#/'
-      })
-      .then(() => {
-        this.setState({showSpinner: false})
-      })
-    }, 2000)
+    this.getMeetup()
+    .then(() => {})
+    .catch(() => {
+      window.location.href = '#/'
+    })
+    .then(() => {
+      this.setState({showSpinner: false})
+    })
   }
 
   render() {
@@ -47,48 +46,35 @@ class Meetup extends React.Component {
     return (
       <div className="ui grid padded row MeetupGrid">
         <div className="column sixteen wide">
-          <h3 className="ui huge header">
-            Meetup
-            <div className="sub header">
-              {meetup ?
-                <small>{meetup.id}</small>
-              : null}
-            </div>
-          </h3>
-          <div className="ui divider"></div>
-        </div>
-        <div className="column sixteen wide">
           {showSpinner ?
             <Spinner show={showSpinner} />
           :
-            <div className="ui items segment">
+            <div className="ui items">
                 <div className="item">
                   <div className="ui grid stackable">
-                    <div className="column four wide">
+                  <div className="column sixteen wide">
+                    <h3 className="ui huge header">
+                      {meetup.title}
+                      <div className="sub header">
+                        {meetup.description}
+                      </div>
+                    </h3>
+                  </div>
+                    <div className="column eight wide">
                       <div className="ui bordered image fluid">
-                        <a href={`#/meetups/${meetup.id}`}><img src={meetup.imageUrl} alt="" /></a>
+                        <a href={meetup.imageUrl} target="_blank" rel="noopener noreferrer"><img src={meetup.imageUrl} alt="" /></a>
                       </div>
                     </div>
-                    <div className="column six wide">
-                      <div className="content">
-                        <div className="ui large header">
-                          <a href={`#/meetups/${meetup.id}`}>{meetup.title}</a>
-                        </div>
-                        <div className="description">
-                          {meetup.description}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="column six wide">
+                    <div className="column eight wide">
                     <div className="content">
                         <div className="meta">
                           <p><i className="icon wait"></i> Starts {formatDate(meetup.start, 'dddd, MMMM DD, hh:mmA')}</p>
                           <p><i className="icon wait"></i> Ends {formatDate(meetup.end, 'MMMM DD, hh:mmA')}</p>
-                          <p><i className="icon marker"></i> <a href={`https://www.google.com/maps?q=${meetup.location}`} target="_blank">{meetup.location}</a></p>
+                          <p><i className="icon marker"></i> <a href={`https://www.google.com/maps?q=${meetup.location}`} target="_blank" rel="noopener noreferrer">{meetup.location}</a></p>
                         </div>
                         <div className="extra">
                           <p><i className="icon tag"></i>{meetup.tags.map((tag, i) => {
-                            return <span className="ui tiny label">{tag}</span>
+                            return <span className="ui tiny label" key={i}>{tag}</span>
                           })}</p>
                           <p><small
                             style={{whiteSpace: 'nowrap'}}
@@ -96,14 +82,12 @@ class Meetup extends React.Component {
                           <a href={`#/organizer/${meetup.organizer}`}
                           style={{display: 'inline-block', maxWidth:'100%', overflow: 'auto'}}
                           >{meetup.organizer}</a></small></p>
-                          <p><small
-                            style={{whiteSpace: 'nowrap'}}
-                          ><i className="icon linkify"></i>
-                          &nbsp;
-                          <a href={`#/meetups/${meetup.id}`}
-                          style={{display: 'inline-block', maxWidth:'100%', overflow: 'auto'}}
-                          >{meetup.id}</a></small></p>
-                          <p><small>Created {formatDate(meetup.createdTimestamp)}</small></p>
+                          <div className="ui label">{meetup.id}</div>
+
+                          <p><small>Created {formatDate(meetup.created)}</small></p>
+                          {meetup.updated ?
+                          <p><small>Updated {formatDate(meetup.updated)}</small></p>
+                          : null}
                         </div>
                       </div>
                     </div>
@@ -111,20 +95,22 @@ class Meetup extends React.Component {
                 </div>
 
               {isOrganizer ?
-                [<div className="ui divider"></div>,
+                <div>
+                <div className="ui divider"></div>
                 <div className="ui tiny buttons">
                   <a
                     href={`#/meetups/${id}/edit`}
-                    className="ui tiny icon blue button">
+                    className="ui tiny icon blue button labeled icon">
                     <i className="icon edit"></i>
                     Edit
                   </a>
-                  <a className="ui tiny icon button"
+                  <a className="ui tiny icon button labeled icon"
                     onClick={this.onMeetupDelete.bind(this)}>
-                    <i className="icon trash red"></i>
+                    <i className="icon trash"></i>
                     Delete
                   </a>
-                </div>]
+                </div>
+                </div>
               : null}
             </div>
             }
@@ -136,32 +122,30 @@ class Meetup extends React.Component {
     )
   }
 
-  getMeetup() {
+  async getMeetup() {
     const {id} = this.state
-    return getInstance()
-    .getMeetupById(id)
-    .then(meetup => {
-      console.log(meetup)
-      this.setState({meetup})
-    })
+    const meetup = await getInstance().getMeetupById(id)
+    this.setState({meetup})
+    return meetup
   }
 
-  onMeetupDelete(event) {
+  async onMeetupDelete (event) {
     event.preventDefault()
 
     const {id} = this.state
 
-    return getInstance()
-    .deleteMeetupById(id)
-    .then(meetup => {
-      console.log(meetup)
-      this.setState({meetup})
-      window.location.href = '#'
-    })
-    .catch(error => {
-      console.error(error)
-      alert('Error deleting meetup')
-    })
+    const meetup = await getInstance().getMeetupById(id)
+    meetup.deleted = true
+
+    const [result] = await uploadJson(meetup)
+    const {hash:ipfsHash} = result
+
+    try {
+      await getInstance().editMeetup({id, ipfsHash})
+      window.location.href = `#/meetups`
+    } catch (error) {
+      alert(error)
+    }
   }
 }
 

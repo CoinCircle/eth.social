@@ -6,9 +6,11 @@
 
 Proof of Concept. On Rinkeby testnet.
 
+# Demo
+
 **[https://eth.social](https://eth.social)**
 
-## Development
+# Development
 
 Watch and compile client
 
@@ -32,7 +34,7 @@ Start testrpc client
 npm run testrpc
 ```
 
-## Deployment
+# Deployment
 
 Compile smart contracts
 
@@ -53,7 +55,7 @@ cd client/
 npm run ipfs-deploy
 ```
 
-## Test
+# Test
 
 Test smart contracts
 

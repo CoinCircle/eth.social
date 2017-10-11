@@ -22,7 +22,7 @@ class App extends React.Component {
       <Router>
         <div>
         <TopMenu />
-        <div className="ui grid stackable padded">
+        <div className="ui grid stackable padded MainContentContainer">
           <Route exact path="/" component={Meetups}/>
           <Route exact path="/meetups" component={Meetups}/>
           <Route exact path="/meetup/new" component={NewMeetup}/>

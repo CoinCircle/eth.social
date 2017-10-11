@@ -1,6 +1,10 @@
 const ipfsApi = require('ipfs-api')
 
-const ipfs = ipfsApi('ipfsd.eth.social', '443')
+const ipfs = ipfsApi({
+  host: 'ipfsd.eth.social',
+  port: '443',
+  protocol: 'https'
+})
 
 function uploadJson(obj) {
   return ipfs.add(Buffer.from(JSON.stringify(obj)))

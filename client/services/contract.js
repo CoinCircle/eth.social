@@ -1,4 +1,5 @@
 const tc = require('truffle-contract')
+const detectNetwork = require('web3-detect-network')
 
 const {getJson, ipfsUrl} = require('../services/ipfs')
 const Meetup = require('../../build/contracts/Meetup.json')
@@ -66,6 +67,8 @@ class Contract {
         }
       }
 
+      meetups = meetups.filter(x => !x.deleted)
+
       resolve(meetups.reverse())
     })
   }
@@ -119,7 +122,14 @@ async function init() {
   contract = new Contract()
 
   let instance = tc(Meetup)
-  instance.setProvider(getProvider())
+  const provider = getProvider()
+  const {type} = await detectNetwork(provider)
+
+  if (type !== 'rinkeby') {
+    alert('Please connect to Rinkeby network')
+  }
+
+  instance.setProvider(provider)
   instance = await instance.deployed()
 
   contract.setContractInstance(instance)
@@ -133,11 +143,7 @@ function getInstance() {
   return contract
 }
 
-// wait for MetaMask to inject Web3
-setTimeout(async () => {
-  await init()
-}, 1000)
-
 module.exports = {
+  init,
   getInstance
 }

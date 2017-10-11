@@ -15,17 +15,20 @@ class App extends React.Component {
               eth<strong>.social</strong>
             </Link>
             <Link to="/meetups" className="item">
-              <i className="icon calendar"></i> Meetups
+              <i className="icon calendar"></i> All Meetups
             </Link>
             <Link to="/meetup/new" className="item">
-              <i className="icon plus circle"></i> New Meetup
+              <i className="icon plus circle"></i> Post New Meetup
             </Link>
+            <div className="item">
+              Network: <strong>Rinkeby Testnet</strong>
+            </div>
             <div className="right menu">
               <Link to="/about" className="item">
                 <i className="icon bookmark"></i> About
               </Link>
               <Link to="/help" className="item">
-                <i className="icon help circle outline"></i> Help
+                <i className="icon help circle outline"></i> Help & Support
               </Link>
             </div>
           </div>

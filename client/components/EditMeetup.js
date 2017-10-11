@@ -16,6 +16,8 @@ const defaultMeetup = {
   image: '',
   start: moment().add(1, 'day').startOf('hour').unix(),
   end: moment().add(1, 'day').add(4, 'hour').startOf('hour').unix(),
+  created: moment().unix(),
+  updated: null,
   organizer: ''
 }
 
@@ -34,16 +36,14 @@ class EditMeetup extends React.Component {
     if (this.state.id) {
       this.state.showSpinner = true
 
-      setTimeout(() => {
-        this.getMeetup()
-        .then(() => {})
-        .catch(() => {
-          window.location.href = '#/'
-        })
-        .then(() => {
-          this.setState({showSpinner: false})
-        })
-      }, 1100)
+      this.getMeetup()
+      .then(() => {})
+      .catch(() => {
+        window.location.href = '#/'
+      })
+      .then(() => {
+        this.setState({showSpinner: false})
+      })
     }
   }
 
@@ -61,6 +61,9 @@ class EditMeetup extends React.Component {
         <h3 className="ui huge header">
           {isNew ? 'New Meetup' : 'Edit Meetup'}
         </h3>
+        <div className="sub header">
+          <p>Please make sure you have your MetaMask wallet connected.</p>
+        </div>
         <div className="ui divider"></div>
       </div>
       <div className="column sixteen wide">
@@ -266,7 +269,13 @@ class EditMeetup extends React.Component {
     event.preventDefault()
 
     const {meetup} = this.state
+    meetup.created = moment().unix()
     meetup.organizer = getInstance().account
+
+    if (!meetup.title) {
+      alert('Title is required')
+      return false
+    }
 
     const [result] = await uploadJson(meetup)
     const {hash:ipfsHash} = result
@@ -283,6 +292,13 @@ class EditMeetup extends React.Component {
     event.preventDefault()
 
     const {meetup} = this.state
+    meetup.updated = moment().unix()
+
+    if (!meetup.title) {
+      alert('Title is required')
+      return false
+    }
+
     const {id} = meetup
     meetup.organizer = getInstance().account
 
