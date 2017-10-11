@@ -1,6 +1,6 @@
 # eth.social
 
-> An Ethereum dApp for posting social events.
+> An Ethereum dApp for posting social events and meetups.
 
 <img src="./screenshots/ethsocial_home.png" width="800">
 
