@@ -100,6 +100,13 @@ p a {
   border-bottom: 1px dotted #000;
 }
 
+:root:root .RootLoader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .ui.segment {
   box-shadow: none;
   border-radius: 0;

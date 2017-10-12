@@ -10,8 +10,8 @@ contract Meetup {
     /**
       * Meetup Events
       */
-    event _MeetupCreated(uint id);
-    event _MeetupUpdated(uint id);
+    event _MeetupCreated(uint indexed id);
+    event _MeetupUpdated(uint indexed id);
 
     struct MeetupPost {
       uint id;
