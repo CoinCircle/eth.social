@@ -3,6 +3,7 @@ const React = require('react')
 const ReactDOM = require('react-dom')
 
 const {getInstance} = require('../services/contract')
+const { getPosts } = require('../services/query')
 
 const Spinner = require('./Spinner.js')
 

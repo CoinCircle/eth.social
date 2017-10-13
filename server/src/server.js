@@ -32,7 +32,7 @@ app.use(route('/posts').get(async ctx => {
   }
 }))
 
-const port = process.env.PORT || 8000
+const port = process.env.PORT || 8001
 
 function start () {
   app.listen(port, () => {

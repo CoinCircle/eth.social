@@ -14,7 +14,7 @@ class About extends React.Component {
         <div className="row">
           <div className="column ten wide">
             <p>
-              eth.social is a place for posting social events,
+              eth.social is a place for posting social events and meetups,
               in a completely decentralized way; it's built on top of the <a href="https://www.ethereum.org/" target="_blank">Ethereum</a> blockchain and <a href="https://ipfs.io/" target="_blank">IPFS</a>.
             </p>
           </div>

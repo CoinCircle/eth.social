@@ -592,7 +592,7 @@ class About extends React.Component {
           React.createElement(
             'p',
             null,
-            'eth.social is a place for posting social events, in a completely decentralized way; it\'s built on top of the ',
+            'eth.social is a place for posting social events and meetups, in a completely decentralized way; it\'s built on top of the ',
             React.createElement(
               'a',
               { href: 'https://www.ethereum.org/', target: '_blank' },
@@ -1498,6 +1498,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 
 const { getInstance } = require('../services/contract');
+const { getPosts } = require('../services/query');
 
 const Spinner = require('./Spinner.js');
 
@@ -1693,7 +1694,7 @@ class Meetups extends React.Component {
 
 module.exports = Meetups;
 
-},{"../services/contract":876,"./Spinner.js":11,"moment":377,"react":645,"react-dom":469}],10:[function(require,module,exports){
+},{"../services/contract":876,"../services/query":878,"./Spinner.js":11,"moment":377,"react":645,"react-dom":469}],10:[function(require,module,exports){
 const React = require('react');
 const ReactDOM = require('react-dom');
 const moment = require('moment');
@@ -119204,6 +119205,7 @@ const detectNetwork = require('web3-detect-network');
 const { getJson, ipfsUrl } = require('../services/ipfs');
 const Meetup = require('../../build/contracts/Meetup.json');
 const { DEFAULT_MEETUP_IMAGE } = require('../constants/defaults');
+const { getPosts } = require('./query');
 
 let contract = null;
 
@@ -119246,30 +119248,9 @@ class Contract {
     return this.instance.editMeetup(id, ipfsHash, { from: this.account });
   }
 
-  getAllMeetups(organizer) {
-    if (!this.instance) {
-      return Promise.reject();
-    }
-
-    return new Promise(async (resolve, reject) => {
-      let meetups = [];
-
-      for (let i = 1; i < 99; i++) {
-        const meetup = await this.getMeetupById(i);
-
-        if (!parseInt(meetup.organizer, 16)) {
-          break;
-        } else {
-          if (meetup.title) {
-            meetups.push(meetup);
-          }
-        }
-      }
-
-      meetups = meetups.filter(x => !x.deleted);
-
-      resolve(meetups.reverse());
-    });
+  async getAllMeetups(organizer) {
+    const posts = await getPosts();
+    return posts;
   }
 
   async getMeetupById(id) {
@@ -119345,7 +119326,7 @@ module.exports = {
   getInstance
 };
 
-},{"../../build/contracts/Meetup.json":1,"../constants/defaults":14,"../services/ipfs":877,"truffle-contract":800,"web3-detect-network":868}],877:[function(require,module,exports){
+},{"../../build/contracts/Meetup.json":1,"../constants/defaults":14,"../services/ipfs":877,"./query":878,"truffle-contract":800,"web3-detect-network":868}],877:[function(require,module,exports){
 (function (Buffer){
 const ipfsApi = require('ipfs-api');
 
@@ -119410,4 +119391,17 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":90,"ipfs-api":278}]},{},[15]);
+},{"buffer":90,"ipfs-api":278}],878:[function(require,module,exports){
+const apiUrl = `${window.location.protocol}//${window.location.hostname}:${8001}`;
+
+async function getPosts() {
+  const response = await fetch(`${apiUrl}/posts`);
+  const json = await response.json();
+  return json.posts;
+}
+
+module.exports = {
+  getPosts
+};
+
+},{}]},{},[15]);

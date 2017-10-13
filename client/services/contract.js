@@ -4,6 +4,7 @@ const detectNetwork = require('web3-detect-network')
 const {getJson, ipfsUrl} = require('../services/ipfs')
 const Meetup = require('../../build/contracts/Meetup.json')
 const {DEFAULT_MEETUP_IMAGE} = require('../constants/defaults')
+const { getPosts } = require('./query')
 
 let contract = null;
 
@@ -47,30 +48,9 @@ class Contract {
     return this.instance.editMeetup(id, ipfsHash, {from: this.account})
   }
 
-  getAllMeetups(organizer) {
-    if (!this.instance) {
-      return Promise.reject()
-    }
-
-    return new Promise(async (resolve, reject) => {
-      let meetups = []
-
-      for (let i = 1; i < 99; i++) {
-        const meetup = await this.getMeetupById(i)
-
-        if (!parseInt(meetup.organizer, 16)) {
-          break
-        } else {
-          if (meetup.title) {
-            meetups.push(meetup)
-          }
-        }
-      }
-
-      meetups = meetups.filter(x => !x.deleted)
-
-      resolve(meetups.reverse())
-    })
+  async getAllMeetups(organizer) {
+    const posts = await getPosts()
+    return posts
   }
 
   async getMeetupById(id) {
