@@ -12,7 +12,7 @@ On Rinkeby testnet.
 
 # Architecture
 
-<img src="./diagrams/ethsocial-containers-view.png" width="400">
+<img src="./diagrams/ethsocial-containers-view-v1.png" width="400">
 
 # Development
 
