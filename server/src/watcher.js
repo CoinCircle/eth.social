@@ -1,5 +1,6 @@
 const Web3 = require('web3')
 const pify = require('pify')
+const request = require('request-promise')
 
 const {upsert} = require('./store')
 const Meetup = require('../../build/contracts/Meetup.json')
@@ -10,6 +11,26 @@ const provider = new Web3.providers.WebsocketProvider(providerUri)
 const web3 = new Web3(provider)
 let instance = null
 
+function ipfsUrl(hash) {
+  //return `https://gateway.ipfs.io/ipfs/${hash}`
+  return `https://ipfsgateway.eth.social/ipfs/${hash}`
+}
+
+async function getJson (ipfsHash) {
+  let json = {}
+
+  try {
+    json = await request({
+      url: ipfsUrl(ipfsHash),
+      json: true
+    })
+  } catch (error) {
+    console.error(error)
+  }
+
+  return json
+}
+
 async function handleEvent (eventObj) {
   const {event:eventType, returnValues, transactionHash:txHash, blockNumber} = eventObj
   const id = returnValues[0]|0
@@ -17,16 +38,42 @@ async function handleEvent (eventObj) {
   console.log(eventObj)
 
   if (eventType === '_MeetupCreated' || eventType === '_MeetupUpdated') {
-  const {0:_id,1:organizer,1:ipfsHash} = await pify(instance.methods.getMeetup(id).call)()
-    console.log(txHash,_id,organizer,ipfsHash, blockNumber)
-    upsert({
-      txHash,
-      blockNumber,
-      id: _id,
-      ipfsHash,
-      title: "foo",
-      description: "bar"
-    })
+  const data = await pify(instance.methods.getMeetup(id).call)()
+  let organizer = data[1]
+  let ipfsHash = data[2]
+
+    let {
+        title,
+        description,
+        location,
+        tags,
+        image,
+        start,
+        end,
+        created,
+        updated,
+        deleted,
+    } = await getJson(ipfsHash)
+
+    if (title && start) {
+      upsert({
+        txHash,
+        blockNumber,
+        id,
+        ipfsHash,
+        title,
+        description,
+        location,
+        tags: tags.join(','),
+        image,
+        start,
+        end,
+        created,
+        updated,
+        organizer,
+        deleted: deleted|0
+      })
+    }
   }
 }
 

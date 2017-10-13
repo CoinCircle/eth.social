@@ -5,6 +5,8 @@ const serve = require('koa-static')
 const koaSwagger = require('koa2-swagger-ui')
 const app = new Koa()
 
+const queryPosts = require('./queryPosts')
+
 app.use(require('kcors')())
 
 app.use(serve(__dirname + '/../public'))
@@ -21,6 +23,13 @@ app.use(koaSwagger({
 
 app.use(route('/').get(ctx => {
   ctx.body = {}
+}))
+
+app.use(route('/posts').get(async ctx => {
+  const posts = await queryPosts()
+  ctx.body = {
+    posts
+  }
 }))
 
 const port = process.env.PORT || 8000

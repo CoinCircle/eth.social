@@ -119350,7 +119350,7 @@ module.exports = {
 const ipfsApi = require('ipfs-api');
 
 const ipfs = ipfsApi({
-  host: 'ipfsd.eth.social',
+  host: 'ipfsapi.eth.social',
   port: '443',
   protocol: 'https'
 });
@@ -119385,6 +119385,10 @@ function uploadFromUrl(url) {
 async function getJson(ipfsHash) {
   let json = {};
 
+  if (!ipfsHash) {
+    return json;
+  }
+
   try {
     json = await (await window.fetch(ipfsUrl(ipfsHash))).json();
   } catch (error) {}
@@ -119393,7 +119397,8 @@ async function getJson(ipfsHash) {
 }
 
 function ipfsUrl(hash) {
-  return `https://gateway.ipfs.io/ipfs/${hash}`;
+  //return `https://gateway.ipfs.io/ipfs/${hash}`
+  return `https://ipfsgateway.eth.social/ipfs/${hash}`;
 }
 
 module.exports = {
