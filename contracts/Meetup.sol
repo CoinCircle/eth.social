@@ -33,7 +33,7 @@ contract Meetup {
     /**
       * Latest sequential meetup ID
       */
-    uint seqId = 0;
+    uint public seqId = 0;
 
     /**
       * Contract owner

@@ -49,8 +49,39 @@ class Contract {
   }
 
   async getAllMeetups(organizer) {
-    const posts = await getPosts()
-    return posts
+    // attempt to get posts from db first
+    try {
+      const posts = await getPosts()
+      return posts
+    } catch (error) {
+      console.error(error)
+    }
+
+    if (!this.instance) {
+      return Promise.reject()
+    }
+
+    return new Promise(async (resolve, reject) => {
+      let meetups = []
+      // const lastId = await this.instance.seqId.call()
+      const lastId = 99
+
+      for (let i = 1; i < lastId; i++) {
+        const meetup = await this.getMeetupById(i)
+
+        if (!parseInt(meetup.organizer, 16)) {
+          break
+        } else {
+          if (meetup.title) {
+            meetups.push(meetup)
+          }
+        }
+      }
+
+      meetups = meetups.filter(x => !x.deleted)
+
+      resolve(meetups.reverse())
+    })
   }
 
   async getMeetupById(id) {
