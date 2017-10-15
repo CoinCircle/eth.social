@@ -1,4 +1,8 @@
-const apiUrl = `${window.location.protocol}//${window.location.hostname}:${8001}`
+let apiUrl = 'https://api.eth.social'
+
+if (window.location.hostname === 'localhost') {
+  apiUrl = 'http://localhost:8001'
+}
 
 async function getPosts () {
   const response = await fetch(`${apiUrl}/posts`)
