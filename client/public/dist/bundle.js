@@ -119423,7 +119423,11 @@ module.exports = {
 
 }).call(this,require("buffer").Buffer)
 },{"buffer":90,"ipfs-api":278}],878:[function(require,module,exports){
-const apiUrl = `${window.location.protocol}//${window.location.hostname}:${8001}`;
+let apiUrl = 'https://api.eth.social';
+
+if (window.location.hostname === 'localhost') {
+  apiUrl = 'http://localhost:8001';
+}
 
 async function getPosts() {
   const response = await fetch(`${apiUrl}/posts`);
