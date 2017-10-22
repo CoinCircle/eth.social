@@ -159,7 +159,6 @@ small {
 :root:root:root .TopMenu {
   max-width: 1200px;
   margin: 0 auto;
-  overflow: auto;
 }
 
 .TopMenu .menu {
@@ -170,6 +169,7 @@ small {
 
 .TopMenuFirst {
   box-shadow: 0 1px 1px #b7b7b7;
+  overflow-x: auto;
 }
 
 @media (max-width: 760px) {
