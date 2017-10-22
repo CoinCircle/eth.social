@@ -45,6 +45,7 @@ body {
 
 body {
   color: #2d2d2d;
+  overflow-x: hidden;
 }
 
 body,
