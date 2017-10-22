@@ -119193,9 +119193,9 @@ function Node (value, prev, next, list) {
 
 },{}],875:[function(require,module,exports){
 function getDefaultAccount() {
-  if (web3 && web3.eth.defaultAccount) {
+  if (window.web3 && web3.eth.defaultAccount) {
     return web3.eth.defaultAccount;
-  } else if (web3 && web3.eth.accounts) {
+  } else if (window.web3 && web3.eth.accounts) {
     web3.eth.defaultAccount = web3.eth.accounts[0];
     return web3.eth.accounts[0];
   }
