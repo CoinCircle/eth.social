@@ -45,6 +45,8 @@ body {
 
 body {
   color: #2d2d2d;
+  overflow: auto;
+  min-width: 0;
 }
 
 body,
@@ -166,6 +168,12 @@ small {
   box-shadow: 0 1px 1px #b7b7b7;
 }
 
+@media (max-width: 760px) {
+  :root:root:root .TopMenu > .column {
+    padding: 0 !important;
+  }
+}
+
 .MeetupsGrid,
 .MeetupGrid,
 .MeetupsGrid .item .grid,
@@ -244,14 +252,6 @@ small {
   padding: 0.2rem 1rem;
 }
 
-@media (max-width: 760px) {
-  :root:root:root:root:root .MeetupRowMeta {
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-  }
-}
-
 :root:root:root:root:root .MeetupRowMeta datetime {
   opacity: 0.5;
 }
@@ -278,6 +278,48 @@ small {
 
 :root:root:root .MeetupImage img {
   border: none;
+}
+
+:root:root:root .MeetupOrganizer {
+  white-space: nowrap;
+  overflow: auto;
+}
+
+@media (max-width: 760px) {
+  :root:root:root .MeetupsGrid {
+    margin: 0 auto !important;
+  }
+
+  :root:root:root .MeetupsGrid .column {
+    width: 100%;
+    margin: 0;
+  }
+
+  :root:root:root:root:root .BoxFrame {
+    width: 100%;
+    margin: 0 auto !important;
+  }
+
+  :root:root:root:root:root .MeetupRowMeta {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  :root:root:root:root:root .MeetupRowContent {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  :root:root:root .MeetupRow .image {
+    flex: 0;
+    margin-bottom: 1rem;
+  }
+
+  :root:root:root .MeetupRow .image img {
+    width: 100%;
+  }
 }
 
 .SiteFooter {

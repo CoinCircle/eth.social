@@ -1390,7 +1390,7 @@ class Meetup extends React.Component {
                     ),
                     React.createElement(
                       'p',
-                      null,
+                      { className: 'MeetupOrganizer' },
                       React.createElement(
                         'small',
                         null,
@@ -1570,13 +1570,13 @@ class Meetups extends React.Component {
         React.createElement(Spinner, { show: showSpinner }),
         meetups.length ? React.createElement(
           'div',
-          { className: 'ui items' },
+          { className: 'MeetupRows' },
           meetups.map((meetup, i) => {
             var size = meetups.length;
 
             return [React.createElement(
               'div',
-              { className: 'item MeetupRow', key: i },
+              { className: 'MeetupRow', key: i },
               React.createElement(
                 'div',
                 { className: 'ui grid stackable' },

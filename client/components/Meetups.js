@@ -56,12 +56,12 @@ class Meetups extends React.Component {
           {!meetups.length && !showSpinner ? <div className="ui message info">No meetups</div> : null}
           <Spinner show={showSpinner} />
           {meetups.length ?
-            <div className="ui items">
+            <div className="MeetupRows">
             {meetups.map((meetup, i) => {
               var size = meetups.length
 
               return ([
-                <div className="item MeetupRow" key={i}>
+                <div className="MeetupRow" key={i}>
                   <div className="ui grid stackable">
                     <div className="column sixteen wide">
                       <datetime className="MeetupRowDate">
