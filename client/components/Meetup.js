@@ -45,7 +45,7 @@ class Meetup extends React.Component {
 
     return (
       <div className="ui grid padded row MeetupGrid">
-        <div className="column sixteen wide">
+        <div className="column ten wide">
           {showSpinner ?
             <Spinner show={showSpinner} />
           :
@@ -55,14 +55,15 @@ class Meetup extends React.Component {
                   <div className="column sixteen wide">
                     <h3 className="ui huge header">
                       {meetup.title}
-                      <div className="sub header">
-                        {meetup.description}
-                      </div>
                     </h3>
                   </div>
+                  <div className="column sixteen wide MeetupDescription">
+                      <p>{meetup.description}</p>
+                  </div>
                     <div className="column eight wide">
-                      <div className="ui bordered image fluid">
-                        <a href={meetup.imageUrl} target="_blank" rel="noopener noreferrer"><img src={meetup.imageUrl} alt="" /></a>
+                      <div className="ui bordered image fluid MeetupImage">
+                        <a href={meetup.imageUrl} target="_blank" rel="noopener noreferrer">
+                          <img src={meetup.imageUrl} alt="" /></a>
                       </div>
                     </div>
                     <div className="column eight wide">
@@ -78,7 +79,7 @@ class Meetup extends React.Component {
                           })}</p>
                           <p><small><i className="icon user"></i>&nbsp;
                           <a href={`#/organizer/${meetup.organizer}`} >{meetup.organizer}</a></small></p>
-                          <div className="ui label">{meetup.id}</div>
+                      <p>ID <span className="ui label">{meetup.id}</span></p>
 
                           <p><small>Created {formatDate(meetup.created)}</small></p>
                           {meetup.updated ?
@@ -111,7 +112,7 @@ class Meetup extends React.Component {
             </div>
             }
         </div>
-        <div className="column sixteen wide">
+        <div className="column ten wide">
           <Comments />
         </div>
       </div>

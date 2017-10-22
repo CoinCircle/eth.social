@@ -256,6 +256,30 @@ small {
   opacity: 0.5;
 }
 
+:root:root .MeetupDescription {
+  border-left: 5px solid #e2e2e2;
+  margin-left: 1rem;
+}
+
+:root:root .MeetupDescription p {
+  line-height: 1.6;
+  font-weight: normal;
+}
+
+:root:root:root .MeetupImage {
+  background: #fff;
+  padding: 1rem;
+  border: 1px solid #ddd;
+}
+
+:root:root:root .MeetupImage a {
+  display: block;
+}
+
+:root:root:root .MeetupImage img {
+  border: none;
+}
+
 .SiteFooter {
   height: 100px !important;
 }

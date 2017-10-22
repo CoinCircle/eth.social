@@ -1297,7 +1297,7 @@ class Meetup extends React.Component {
       { className: 'ui grid padded row MeetupGrid' },
       React.createElement(
         'div',
-        { className: 'column sixteen wide' },
+        { className: 'column ten wide' },
         showSpinner ? React.createElement(Spinner, { show: showSpinner }) : React.createElement(
           'div',
           { className: 'ui items' },
@@ -1313,12 +1313,16 @@ class Meetup extends React.Component {
                 React.createElement(
                   'h3',
                   { className: 'ui huge header' },
-                  meetup.title,
-                  React.createElement(
-                    'div',
-                    { className: 'sub header' },
-                    meetup.description
-                  )
+                  meetup.title
+                )
+              ),
+              React.createElement(
+                'div',
+                { className: 'column sixteen wide MeetupDescription' },
+                React.createElement(
+                  'p',
+                  null,
+                  meetup.description
                 )
               ),
               React.createElement(
@@ -1326,7 +1330,7 @@ class Meetup extends React.Component {
                 { className: 'column eight wide' },
                 React.createElement(
                   'div',
-                  { className: 'ui bordered image fluid' },
+                  { className: 'ui bordered image fluid MeetupImage' },
                   React.createElement(
                     'a',
                     { href: meetup.imageUrl, target: '_blank', rel: 'noopener noreferrer' },
@@ -1400,9 +1404,14 @@ class Meetup extends React.Component {
                       )
                     ),
                     React.createElement(
-                      'div',
-                      { className: 'ui label' },
-                      meetup.id
+                      'p',
+                      null,
+                      'ID ',
+                      React.createElement(
+                        'span',
+                        { className: 'ui label' },
+                        meetup.id
+                      )
                     ),
                     React.createElement(
                       'p',
@@ -1457,7 +1466,7 @@ class Meetup extends React.Component {
       ),
       React.createElement(
         'div',
-        { className: 'column sixteen wide' },
+        { className: 'column ten wide' },
         React.createElement(Comments, null)
       )
     );
@@ -119186,7 +119195,7 @@ function Node (value, prev, next, list) {
 function getDefaultAccount() {
   if (web3 && web3.eth.defaultAccount) {
     return web3.eth.defaultAccount;
-  } else if (web3 && web.eth.accounts) {
+  } else if (web3 && web3.eth.accounts) {
     web3.eth.defaultAccount = web3.eth.accounts[0];
     return web3.eth.accounts[0];
   }

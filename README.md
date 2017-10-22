@@ -16,6 +16,12 @@ On Rinkeby testnet.
 
 # Development
 
+Start testrpc client
+
+```bash
+npm run testrpc
+```
+
 Watch and compile client
 
 ```bash
@@ -32,10 +38,12 @@ cd client/
 npm run browser
 ```
 
-Start testrpc client
+Run server
 
 ```bash
-npm run testrpc
+cd server/
+
+npm start
 ```
 
 # Deployment
