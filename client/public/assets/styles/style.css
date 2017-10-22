@@ -38,6 +38,10 @@
 	font-style: normal;
 }
 
+html {
+  overflow: hidden;
+}
+
 html,
 body {
   background: #fafafa;
