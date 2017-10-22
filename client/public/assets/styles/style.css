@@ -39,7 +39,7 @@
 }
 
 html {
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 html,
@@ -51,7 +51,6 @@ body {
   color: #2d2d2d;
   min-width: 0;
   overflow-x: hidden;
-  overflow-y: scroll
 }
 
 body,
