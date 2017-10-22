@@ -169,14 +169,9 @@ small {
 
 .TopMenuFirst {
   box-shadow: 0 1px 1px #b7b7b7;
-  overflow-x: auto;
 }
 
 @media (max-width: 760px) {
-  :root:root:root .TopMenuFirst {
-    overflow-x: scroll;
-  }
-
   :root:root:root .TopMenu > .column {
     padding: 0 !important;
   }
