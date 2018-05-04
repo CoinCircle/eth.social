@@ -32,7 +32,7 @@ class Help extends React.Component {
           <div className="ui divider"></div>
         </div>
         <p><a
-            href="https://github.com/miguelmota/eth.social/issues/new" target="_blank" rel="noopener noreferrer">
+            href="https://github.com/coincircle/eth.social/issues/new" target="_blank" rel="noopener noreferrer">
           Submit Issue / Feature Request
       </a></p>
       </div>

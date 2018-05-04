@@ -23,7 +23,7 @@ class About extends React.Component {
           <div className="column sixteen wide">
             <p>
               All source code is available on&nbsp;
-              <a href="https://github.com/miguelmota/eth.social" target="_blank">
+              <a href="https://github.com/coincircle/eth.social" target="_blank">
                 <i className="icon large github"></i> Github
               </a>
             </p>

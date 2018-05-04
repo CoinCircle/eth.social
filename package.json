@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/miguelmota/eth.social.git"
+    "url": "git+https://github.com/coincircle/eth.social.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/miguelmota/eth.social/issues"
+    "url": "https://github.com/coincircle/eth.social/issues"
   },
-  "homepage": "https://github.com/miguelmota/eth.social#readme",
+  "homepage": "https://github.com/coincircle/eth.social#readme",
   "devDependencies": {
     "truffle-hdwallet-provider": "git+https://github.com/miguelmota/truffle-hdwallet-provider.git",
     "watchify": "^3.9.0"
